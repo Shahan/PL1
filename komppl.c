@@ -1849,21 +1849,25 @@ int main (int argc, char **argv )
               /*  ISXTXT                */
      {
       for ( NISXTXT = 0; NISXTXT <= MAXNISXTXT; NISXTXT++ )
-
-       {
-  if ( !fread ( ISXTXT [NISXTXT], 80, 1, fp ) )
-   {
-    if ( feof ( fp ) )                      /* в конце файла идем на  */
-     goto main1;                            /* метку  main1           */
-
-    else                                    /* при сбое чтения        */
-     {                                      /* выдаем диагностику     */
-      printf ( "%s\n",
-       "Ошибка при чтении фыйла с исх.текстом" );
-      return 1;                               /* и завершаем трансляцию */
-     }
-   }
-       }
+      {
+          memset(ISXTXT[NISXTXT], 0, 80*sizeof(char));
+          if ( fgets(ISXTXT[NISXTXT], 80, fp) == NULL )//!fread ( ISXTXT [NISXTXT], 80, 1, fp ) )
+          {
+              if ( feof ( fp ) )                      /* в конце файла идем на  */
+                  goto main1;                            /* метку  main1           */
+              else                                    /* при сбое чтения        */
+              {                                      /* выдаем диагностику     */
+                  printf ( "%s\n",
+                          "Ошибка при чтении фыйла с исх.текстом" );
+                  return 1;                               /* и завершаем трансляцию */
+              }
+          }
+          for (int i=0; i<strlen(ISXTXT[NISXTXT]); i++)
+          {
+              if(ISXTXT[NISXTXT][i]=='\n')
+                  ISXTXT[NISXTXT][i]=0;
+          }          
+      }
 
       printf ( "%s\n",                            /*при пеерполнении массива*/
        "Переполнение буфера чтения исх.текста" ); /* ISXTXT выдать диагн.   */
