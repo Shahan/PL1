@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+import os
+import sys
+import time
+def getScriptPath():
+    return os.path.dirname(os.path.realpath(sys.argv[0]))+"/"
+pwd=getScriptPath()
+def fileModificationTime(file):
+	return time.ctime(os.path.getmtime(file))
+def rebuildFileIfNeeded(file,sourceFile,buildScript):
+	if(not os.path.exists(file)):
+		os.system(buildScript)
+	if fileModificationTime(file) < fileModificationTime(sourceFile):
+		os.system(buildScript)
+################################################################		
+if(not os.path.exists(pwd+"build")):
+	os.system(pwd+"build-ALL")
+
+rebuildFileIfNeeded(pwd+"build/komppl",pwd+"../komppl.c",pwd+"build-komppl")
+rebuildFileIfNeeded(pwd+"build/kompassr",pwd+"../kompassr.c",pwd+"build-kompassr")
+rebuildFileIfNeeded(pwd+"build/absloadm",pwd+"../absloadm.c",pwd+"build-absloadm")
