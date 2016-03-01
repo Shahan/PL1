@@ -967,7 +967,8 @@ int main( int argc, char **argv )                /*главная програм
 			for ( I1 = 0; I1 <= DL_ASSTEXT; I1++ )
 
 			{
-				if ( !fread ( ASSTEXT [I1], 80, 1, fp ) )
+                if ( fgets(ASSTEXT [I1], 80, fp) == NULL )
+				//if ( !fread ( ASSTEXT [I1], 80, 1, fp ) )
 				{
 					if ( feof ( fp ) )
 						goto main1;
@@ -977,6 +978,12 @@ int main( int argc, char **argv )                /*главная програм
 						return 1;
 					}
 				}
+                for (int i=0; i<strlen(ASSTEXT [I1]); i++)
+                {
+                    if(ASSTEXT [I1][i]=='\n')
+                        ASSTEXT [I1][i]=0;
+                }
+                //printf("%s\n",ASSTEXT [I1]);
 			}
 
 			printf ( "%s\n", "Переполнение буфера чтения исх.текста" );

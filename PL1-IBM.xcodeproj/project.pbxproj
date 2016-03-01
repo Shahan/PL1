@@ -11,6 +11,8 @@
 			isa = PBXAggregateTarget;
 			buildConfigurationList = 415A815D1C84BA6000E45F22 /* Build configuration list for PBXAggregateTarget "ALL" */;
 			buildPhases = (
+				CD6659711C85BC1100A99587 /* CopyFiles */,
+				CD6659741C85BC5300A99587 /* ShellScript */,
 			);
 			dependencies = (
 				415A81611C84BA6A00E45F22 /* PBXTargetDependency */,
@@ -29,6 +31,7 @@
 		415A81541C84B5EE00E45F22 /* examppl.pli in CopyFiles */ = {isa = PBXBuildFile; fileRef = 415A81531C84B5E700E45F22 /* examppl.pli */; };
 		415A81561C84B61900E45F22 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 415A81551C84B61900E45F22 /* libncurses.tbd */; };
 		415A815A1C84B69100E45F22 /* spis.mod in CopyFiles */ = {isa = PBXBuildFile; fileRef = 415A81581C84B68700E45F22 /* spis.mod */; };
+		CD6659731C85BC1900A99587 /* run-task in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD6659721C85BC1900A99587 /* run-task */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +106,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CD6659711C85BC1100A99587 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 16;
+			files = (
+				CD6659731C85BC1900A99587 /* run-task in CopyFiles */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -115,6 +128,7 @@
 		415A81531C84B5E700E45F22 /* examppl.pli */ = {isa = PBXFileReference; lastKnownFileType = text; path = examppl.pli; sourceTree = "<group>"; };
 		415A81551C84B61900E45F22 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
 		415A81581C84B68700E45F22 /* spis.mod */ = {isa = PBXFileReference; lastKnownFileType = text; path = spis.mod; sourceTree = "<group>"; };
+		CD6659721C85BC1900A99587 /* run-task */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "run-task"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -146,6 +160,7 @@
 		415A81101C84B3CB00E45F22 = {
 			isa = PBXGroup;
 			children = (
+				CD6659721C85BC1900A99587 /* run-task */,
 				415A81551C84B61900E45F22 /* libncurses.tbd */,
 				415A81571C84B68700E45F22 /* MOD */,
 				415A81521C84B5E700E45F22 /* PL1 */,
@@ -319,6 +334,19 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "osascript -e 'tell application \"Terminal\"' -e 'delay 0.5' -e \"set currentTab to do script (\\\"cd \\\\\\\"$TARGET_BUILD_DIR\\\\\\\" ; ./$PRODUCT_NAME spis.mod\\\")\" -e 'end tell' &";
+		};
+		CD6659741C85BC5300A99587 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$TARGET_BUILD_DIR\"\nchmod 0777 ./run-task.sh\nosascript -e 'tell application \"Terminal\"' -e 'delay 0.5' -e \"set currentTab to do script (\\\"cd \\\\\\\"$TARGET_BUILD_DIR\\\\\\\" ; ./run-task\\\")\" -e 'end tell' &";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -549,6 +577,7 @@
 				415A815F1C84BA6000E45F22 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
