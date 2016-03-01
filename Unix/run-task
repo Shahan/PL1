@@ -1,0 +1,59 @@
+#!/bin/bash
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+cd "$DIR"
+./rebuild-if-needed
+echo "copying files"
+cp ../PL1/* ./build/
+cp ../MOD/* ./build/
+cd ./build/
+
+
+
+
+#! /bin/bash 
+echo
+echo
+echo
+echo "______________S T A R T   J O B_____________________"
+echo
+echo
+echo ' PL/1  ----->  Asswmbler    c o m p i l i n g'
+echo "continue?(y/n)"
+read OTV
+if [ $OTV = "y" ] 
+then
+ echo
+ ./komppl  examppl.pli
+fi
+echo
+echo
+echo
+echo ' Assembler  ----->  Object image   c o m p i l i n g'
+echo "continue?(y/n)"
+read OTV
+if [ $OTV = "y" ] 
+then
+ echo
+./kompassr examppl.ass
+fi
+echo
+echo
+echo
+echo ' Load, run and debug Object image  '
+echo "continue?(y/n)"
+read OTV
+if [ $OTV = "y" ] 
+then
+ echo
+./absloadm spis.mod
+fi
+echo
+echo
+echo
+echo "______________F I N I S H     J O B__________________"
