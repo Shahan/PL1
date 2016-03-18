@@ -431,7 +431,10 @@ BEGIN:
 				else INST [j] = '\x00'; /*                        */
 			}
 			if ((res = T_MOP[i].BXPROG()) != 0) /* уйти в программу отобр.*/
+            {
+                printf("Ошибка при обработке комманды '%c%c%c' 0x%02x\n",T_MOP[i].MNCOP[0],T_MOP[i].MNCOP[1],T_MOP[i].MNCOP[2],T_MOP[i].CODOP);
 				return (res); /* ассемблерного эквивале-*/
+            }
 			/* нта текущей команды,   */
 			/*                        */
 			goto l0;            /* перейти к дальнейшей  */
@@ -557,7 +560,6 @@ SKIP:
 	delwin(wred);
 	delwin(wgreen);
 	delwin(wmargenta);
-
 	return 0;
 }
 //...........................................................................
@@ -693,20 +695,19 @@ CONT2:
 
 			for ( N=0; N < K; N++ )   /*загрузить данные с очер.*/
 				OBLZ [ (int) J++ ] = TXT.STR_TXT.OPER [N]; /*об'ектной карты         */
-		}else
-        {
-            printf("%s '%c%c%c'\n","Непрвильный тип объектного файла",OBJCARD [I][1],OBJCARD [I][2],OBJCARD [I][3]);
-            exit(-1);
-        }
+		}
 	}
 
-
-
-
+    printf("IOBJC: %i\n",IOBJC);
+    for(int k=0;k<IOBJC;k++)
+    {
+        for(int kk=0;kk<80;kk++){
+            printf("%c",OBJCARD[k][kk]);
+        }
+    }
+    getch();
 	InitCurses();
-
 	res = sys();
-
 	switch (res)
 	{
 	case 6:
