@@ -2,13 +2,13 @@ EXAMP    START 0
          BALR  RBASE,0      
          USING *,RBASE      
          LH    R2,A 
-         MVC   BUF + 5,B
+         MVC   BUF,B
          CVB   R3,BUF   
-         MVC   C(2),TRUE
+         MVC   C,TRUE
          CR    R2,R3
          BC    8,L2  
-L1:      BCR   15,14         
-L2:      MVC   C(2),FALSE
+L1       BCR   15,14         
+L2       MVC   C,FALSE
          BC    15,L1          
 TRUE     DC    H'1'  
 FALSE    DC    H'0'

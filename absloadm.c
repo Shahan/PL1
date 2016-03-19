@@ -311,8 +311,8 @@ int FRX(void)
 
 			ADDR = VR[B] + VR[X] + D;
 			wprintw(wgreen,"        %.06lX       \n", ADDR);
-			if (ADDR % 4 != 0)
-				return (7);
+			/*if (ADDR % 4 != 0) // TODO: FIX alignement in kompassr
+				return (7);*/
 			break;
 		}
 	}
@@ -698,14 +698,14 @@ CONT2:
 		}
 	}
 
-    printf("IOBJC: %i\n",IOBJC);
+    /*printf("IOBJC: %i\n",IOBJC);
     for(int k=0;k<IOBJC;k++)
     {
         for(int kk=0;kk<80;kk++){
             printf("%c",OBJCARD[k][kk]);
         }
     }
-    getch();
+    getch();*/
 	InitCurses();
 	res = sys();
 	switch (res)
@@ -729,10 +729,10 @@ CONT2:
 
 	endwin();
 END:
-    for(int II=0;II<DOBLZ;II++)
+    /*for(int II=0;II<DOBLZ;II++)
     {
         printf("%02x ",OBLZ[II]);
-    }
+    }*/
 	printf ("\n%s\n", "завершение обработки");
 
 	return 0;
@@ -767,6 +767,7 @@ ERR6:
 	goto END;
 
 ERR7:
+    printf("ADDR: 0x%lx\n",ADDR);
 	printf("прерывание - ошибка адресации\n");
 	goto END;
 
