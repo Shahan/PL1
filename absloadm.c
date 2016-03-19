@@ -13,7 +13,7 @@
 #define  NOP 11                                    /*кол-во обрабатываемых   */
 /* команд                 */
 
-
+char opname[6];
 char NFIL [30] = "\x0";
 
 int IOBJC   = 0;                                  /*инд.вакантн.стр. OBJCARD*/
@@ -121,7 +121,7 @@ struct TMOP                                       /*структ.стр.табл
 	int (*BXPROG)();                          /*указатель на подпр.обраб*/
 } T_MOP [NOP]  =                                  /*об'явление табл.маш.опер*/
 {
-	{{'B', 'A', 'L', 'R', ' '}, '\x05', 2, FRR},/*инициализация           */
+	{{'B', 'A', 'L', 'R', ' '}, '\x05', 2, FRR}, /*инициализация           */
 	{{'B', 'C', 'R', ' ', ' '}, '\x07', 2, FRR}, /*строк                   */
 	{{'S', 'T', ' ', ' ', ' '}, '\x50', 4, FRX}, /*таблицы                 */
 	{{'L', ' ', ' ', ' ', ' '}, '\x58', 4, FRX}, /*машинных                */
@@ -324,7 +324,7 @@ int FRX(void)
 //---------------------------------------------------------------------------
 int wind(void)
 {
-	int j1, k, temp;
+    int j1, k, temp;
 
 	x = 0;
 	y = 16;
@@ -384,7 +384,7 @@ int sys(void)
 //нижнее поле
 	wmargenta = newwin(1, 80, 24, 0);
 	wbkgd(wmargenta, COLOR_PAIR(COLOR_MAGENTA));
-	waddstr(wmargenta, "\"PgUp\",\"PgDn\",\"Up\",\"Down\"->просмотр дампа; \"Enter\"->выполнить очередную команду");
+	waddstr(wmargenta, "\"PgUp\",\"PgDn\",\"Up\",\"Down\"->scroll dump; \"Enter\"->execute next command");
 
 //строка состояния
 	wcyan = newwin(1, 80, 23, 0);
@@ -480,7 +480,7 @@ l0:
 	wclear(wblue); //очистка окна регистров
 	wind();
 
-	waddstr(wcyan, "готовность к выполнению очередной команды с адресом ");
+	waddstr(wcyan, "ready to run command with address ");
 	wprintw(wcyan, "%.06lX", I - T_MOP[k].DLOP);
 	waddstr(wcyan, "\n");
 	wrefresh(wcyan);
@@ -535,6 +535,8 @@ WAIT:
 
 SKIP:
 
+    memcpy(opname, T_MOP[k].MNCOP, 5*sizeof(char));
+    opname[6]=0;
 	switch (T_MOP[k].CODOP)                   //согласно  коду команды,
 	{                                         //селектируемой сч.адреса
 	//выбрать подпрогр.интер-
@@ -552,6 +554,10 @@ SKIP:
 	case '\x5A': P_A();
 		break;
 	case '\x5B': P_S();
+        break;
+    default:
+        return 10;
+        break;
 	}
 
 	goto BEGIN;
@@ -725,6 +731,11 @@ CONT2:
 		endwin();
 		goto ERR8;
 	}
+    case 10:
+    {
+        endwin();
+    	goto ERR10;
+    }
 	}
 
 	endwin();
@@ -777,4 +788,7 @@ ERR8:
 ERR9:
 	printf ( "%s\n", "Неверный тип файла с исходным текстом" );
 	goto END;
+ERR10:
+    printf ( "%s'%s'\n", "Не обработанная инструкция ",opname);
+    goto END;
 }
