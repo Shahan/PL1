@@ -536,7 +536,7 @@ WAIT:
 SKIP:
 
     memcpy(opname, T_MOP[k].MNCOP, 5*sizeof(char));
-    opname[6]=0;
+    opname[5]=0;
 	switch (T_MOP[k].CODOP)                   //согласно  коду команды,
 	{                                         //селектируемой сч.адреса
 	//выбрать подпрогр.интер-
@@ -555,8 +555,10 @@ SKIP:
 		break;
 	case '\x5B': P_S();
         break;
+    case '\x48': P_L(); // Added by Sergey Rump
+            break;
     default:
-        return 10;
+        return 10;// Обработка инструкции ещё не сделана
         break;
 	}
 
