@@ -10,6 +10,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+
 void printNear(int I,int R,char* str)
 {
     int start=I-R;
@@ -563,61 +564,69 @@ void compress_ISXTXT()                            /* Программа упло
 /* роль примитивного лек- */
 /* сического анализатора  */
 {
-	I3 = 0;
-	for ( I1 = 0; I1 < NISXTXT; I1++ )
-	{
-		for ( I2 = 0; I2 < 80; I2++ )
-			if ( ISXTXT [ I1 ][ I2 ] != '\x0' )
-			{
-				if ( ISXTXT [ I1 ][ I2 ] == ' ' &&
-				     ( PREDSYM == ' ' || PREDSYM == ';' ||
-				       PREDSYM == ')' || PREDSYM == ':' ||
-				       PREDSYM == '('
-				     )
-				     )
-				{
-					PREDSYM = ISXTXT [ I1 ][ I2 ];
-					goto L2;
-				}
-
-				if
-				(
-				        ( ISXTXT [ I1 ][ I2 ] == '+' ||
-				          ISXTXT [ I1 ][ I2 ] == '-' ||
-				          ISXTXT [ I1 ][ I2 ] == '=' ||
-				          ISXTXT [ I1 ][ I2 ] == '(' ||
-				          ISXTXT [ I1 ][ I2 ] == ')' ||
-				          ISXTXT [ I1 ][ I2 ] == '*'
-				        )
-				        &&
-				        PREDSYM == ' '
-				)
-				{
-					I3--;
-					goto L1;
-				}
-
-
-				if ( ISXTXT [ I1 ][ I2 ] == ' ' &&
-				     ( PREDSYM == '+' || PREDSYM == '-' ||
-				       PREDSYM == '=' || PREDSYM == '*'
-				     )
-				     )
-				{
-					goto L2;
-				}
-
-L1:
-				PREDSYM = ISXTXT [ I1 ][ I2 ];
-				STROKA [ I3 ] = PREDSYM;
-				I3++;
-
-L2:    continue;
-			}
-			else
-				break;
-	}
-	STROKA [I3] = '\x0';
+    printf("compress\n");
+    I3 = 0;
+    for ( I1 = 0 ; I1 < NISXTXT ; I1++ )
+    {
+        for ( I2 = 0 ; I2 < 80 ; I2++ ) {
+            
+            
+            if ( ISXTXT [ I1 ][ I2 ] != '\x0' )
+            {
+                
+                if ( (ISXTXT [ I1 ][ I2 ] == ' ' || ISXTXT [ I1 ][ I2 ] == '\t' || ISXTXT [ I1 ][ I2 ] == '\n') &&
+                    ( PREDSYM == ' ' || PREDSYM == '\t' || PREDSYM == '\n' || PREDSYM == ';' ||
+                     PREDSYM == ')' || PREDSYM == ':' ||
+                     PREDSYM == '('
+                     )
+                    )
+                {
+                    PREDSYM = ' ';
+                    goto L2;
+                }
+                
+                if
+                    (
+                     ( ISXTXT [ I1 ][ I2 ] == '+' ||
+                      ISXTXT [ I1 ][ I2 ] == '-' ||
+                      ISXTXT [ I1 ][ I2 ] == '=' ||
+                      ISXTXT [ I1 ][ I2 ] == '(' ||
+                      ISXTXT [ I1 ][ I2 ] == ')' ||
+                      ISXTXT [ I1 ][ I2 ] == '*'
+                      )
+                     &&
+                     (PREDSYM == ' ' || PREDSYM == '\t' || PREDSYM == '\n')
+                     )
+                {
+                    I3-- ;
+                    goto L1;
+                }
+                
+                
+                if ( (ISXTXT [ I1 ][ I2 ] == ' ' || ISXTXT [ I1 ][ I2 ] == '\t' || ISXTXT [ I1 ][ I2 ] == '\n') &&
+                    ( PREDSYM == '+' || PREDSYM == '-' ||
+                     PREDSYM == '=' || PREDSYM == '*'
+                     )
+                    )
+                {
+                    goto L2;
+                }
+                
+            L1:
+                PREDSYM = ISXTXT [ I1 ][ I2 ];
+                STROKA [ I3 ] = PREDSYM;
+                //printf("123\n");
+                //printf("%s", STROKA[I3]);
+                //std::cout<<STROKA[I3];
+                I3++ ;
+                
+            L2:    continue;
+            }
+            else
+                break;
+        }
+    }
+    STROKA [I3] = '\x0';
 }
 
 /*..........................................................................*/
@@ -1838,6 +1847,8 @@ int main (int argc, char **argv )
 	char *ptr=argv[1];                        /* - указатель на первый  */
 	/*параметр командной стр. */
 
+    system("pwd");
+    
 	strcpy ( NFIL, ptr );                     /*изъять имя транслируемой*/
 	/*программы из командной  */
 	/*строки в рабочее поле   */
