@@ -59,6 +59,9 @@ int FRR();                                        /*подпр.обр.опер.R
 /*п р о т о т и п  обращ.к*/
 int FRX();                                        /*подпр.обр.опер.RX-форм. */
 /*..........................................................................*/
+/*п р о т о т и п  обращ.к*/
+int FXX();/*подпр.обр.опер.XX-форм. */
+/*..........................................................................*/
 
 
 int X1 = 1;                                       /* инициализация коорд.   */
@@ -74,7 +77,7 @@ int R1,                                           /*номер 1-го регис
 /*в формате RX            */
 unsigned long I,                                  /*счетчик адр.тек.ком-ды  */
               BAS_ADDR,                     /*адрес начала обл.загруз.*/
-              I1,ADDR,ARG,VS;               /*вспомогательные перем.  */
+              I1,ADDR1,ADDR2,ARG,VS;               /*вспомогательные перем.  */
 unsigned long VR[16],                             /*массив,содерж.знач.рег. */
               LIGHTPTR;                     /*адрес начала обл.отсвет.*/
 
@@ -127,7 +130,7 @@ struct TMOP                                       /*структ.стр.табл
 	{{'L', ' ', ' ', ' ', ' '}, '\x58', 4, FRX}, /*машинных                */
 	{{'A', ' ', ' ', ' ', ' '}, '\x5A', 4, FRX}, /*операций                */
 	{{'S', ' ', ' ', ' ', ' '}, '\x5B', 4, FRX}, /*                        */
-    {{'M', 'V', 'C', ' ', ' '}, '\xD2', 4, FRX},  /* ADDED BY SERGEY RUMP   */
+    {{'M', 'V', 'C', ' ', ' '}, '\xD2', 4, FXX}, /* ADDED BY SERGEY RUMP   */
     {{'C', 'V', 'B', ' ', ' '}, '\x4F', 4, FRX},
     {{'C', 'R', ' ', ' ', ' '}, '\x19', 4, FRX},
     {{'B', 'C', ' ', ' ', ' '}, '\x47', 4, FRX},
@@ -177,8 +180,8 @@ int P_ST()                                        /*  п р о г р а м м а
 	int sm,i;                                 /*рабочие                 */
 	char bytes[4];                            /*переменные              */
 
-	ADDR = VR[B] + VR[X] + D;                 /*вычисление абс.адреса и */
-	sm = (int) (ADDR -I);                     /*смещения                */
+	ADDR1 = VR[B] + VR[X] + D;                 /*вычисление абс.адреса и */
+	sm = (int) (ADDR1 -I);                     /*смещения                */
 
 	bytes[0] = (VR[R1] -                      /*преобразование содержим.*/
 	            VR[R1]% 0x1000000L)/0x1000000L; /*РОН, использованного в  */
@@ -201,8 +204,8 @@ int P_L()                                         /*  п р о г р а м м а
 {                                                 /*команды L               */
 	int sm;                                   /*рабочая переменная      */
 
-	ADDR = VR[B] + VR[X] + D;                 /*вычисление абс.адреса и */
-	sm = (int) ( ADDR - I );                  /*смещения                */
+	ADDR1 = VR[B] + VR[X] + D;                 /*вычисление абс.адреса и */
+	sm = (int) ( ADDR1 - I );                  /*смещения                */
 	VR[R1] =                                  /*преобразование содержим.*/
 	         OBLZ[BAS_IND + CUR_IND + sm] * 0x1000000L + /*второго операнда к виду,*/
 	         OBLZ[BAS_IND + CUR_IND + sm + 1] * 0x10000L + /*принятому в IBM PC, и   */
@@ -219,8 +222,8 @@ int P_A()                                         /*  п р о г р а м м а
 {                                                 /*команды A               */
 	int sm;                                   /*рабочая переменная      */
 
-	ADDR = VR[B] + VR[X] + D;                 /*вычисление абс.адреса и */
-	sm = ( int ) ( ADDR -I );                 /*смещения                */
+	ADDR1 = VR[B] + VR[X] + D;                 /*вычисление абс.адреса и */
+	sm = ( int ) ( ADDR1 -I );                 /*смещения                */
 	ARG = OBLZ[BAS_IND + CUR_IND + sm] * 0x1000000L+/*формирование содержимого*/
 	      OBLZ[BAS_IND + CUR_IND + sm + 1] * 0x10000L + /*второго операнда в сог- */
 	      OBLZ[BAS_IND + CUR_IND + sm + 2] * 0x100 + /*лашениях ЕС ЭВМ         */
@@ -238,8 +241,8 @@ int P_S()                                         /* п р о г р а м м а 
 {                                                 /* команды S              */
 	int sm;                                   /*рабочая переменная      */
 
-	ADDR = VR[B] + VR[X] + D;                 /*вычисление рабочего     */
-	sm = ( int ) ( ADDR - I );                /*адреса и смещения       */
+	ADDR1 = VR[B] + VR[X] + D;                 /*вычисление рабочего     */
+	sm = ( int ) ( ADDR1 - I );                /*адреса и смещения       */
 
 	ARG = OBLZ[BAS_IND + CUR_IND + sm] * 0x1000000L+/*формирование содержимого*/
 	      OBLZ[BAS_IND + CUR_IND + sm + 1] * 0x10000L +/*второго операнда в сог- */
@@ -251,6 +254,11 @@ int P_S()                                         /* п р о г р а м м а 
 	return 0;                                 /*успешное заверш.прогр.  */
 }
 
+
+int P_MVC()
+{
+    return 0;
+}
 
 //..........................................................................
 int FRR(void)
@@ -282,7 +290,6 @@ int FRR(void)
 int FRX(void)
 {
 	int i, j;
-
 	for (i = 0; i < NOP; i++)
 	{
 		if (INST[0] == T_MOP[i].CODOP)
@@ -309,8 +316,8 @@ int FRX(void)
 			B = j;
 			wprintw(wgreen, "%1d)", j);
 
-			ADDR = VR[B] + VR[X] + D;
-			wprintw(wgreen,"        %.06lX       \n", ADDR);
+			ADDR1 = VR[B] + VR[X] + D;
+			wprintw(wgreen,"        %.06lX       \n", ADDR1);
 			/*if (ADDR % 4 != 0) // TODO: FIX alignement in kompassr
 				return (7);*/
 			break;
@@ -318,6 +325,60 @@ int FRX(void)
 	}
 
 	return 0;
+}
+//...........................................................................
+int FXX(void)
+{
+    int i, j;
+    waddstr(wgreen, "!!\n");
+    refresh();
+    for (i = 0; i < NOP; i++)
+    {
+        if (INST[0] == T_MOP[i].CODOP)
+        {
+            //waddstr(wgreen, " ");
+            for (j = 0; j < 5; j++)
+                waddch(wgreen, T_MOP[i].MNCOP[j]);
+            //waddstr(wgreen, " ");
+            //waddstr(wgreen, "\n");//TODO: remove
+            //ADDR1
+            j = INST[2] % 16;
+            j = j * 256 + INST[3];
+            D = j;
+            //wprintw(wgreen, "X'%.3X'(", j);
+            
+            j = INST[1] % 16;
+            X = j;
+            //wprintw(wgreen, "%1d, ", j);
+            
+            j = INST[2] >> 4;
+            B = j;
+            //wprintw(wgreen, "%1d)", j);
+            
+            ADDR1 = VR[B] + VR[X] + D;
+            //wprintw(wgreen," %.06lX ", ADDR1);
+            //ADDR2
+            j = INST[4] % 16;
+            j = j * 256 + INST[3];
+            D = j;
+            //wprintw(wgreen, "X'%.3X'(", j);
+            
+            j = INST[1] % 16;
+            X = j;
+            //wprintw(wgreen, "%1d, ", j);
+            
+            j = INST[2] >> 4;
+            B = j;
+            //wprintw(wgreen, "%1d)", j);
+            
+            ADDR2 = VR[B] + VR[X] + D;
+            //wprintw(wgreen,"        %.06lX       \n", ADDR1);
+            /*if (ADDR % 4 != 0) // TODO: FIX alignement in kompassr
+             return (7);*/
+            break;
+        }
+    }
+    return 0;
 }
 
 //...........................................................................
@@ -421,14 +482,16 @@ BEGIN:
 //рисуем окно, выводим текст
 			for (j = 0; j < 6; j++)   /*                        */
 			{                      /*                        */
-				if (j < T_MOP[i].DLOP) /*                        */
-				{              /* выдать шестнадцатеричн.*/
+				//if (j < T_MOP[i].DLOP) //TODO: проверить длину операции
+				//{              /* выдать шестнадцатеричн.*/
 					wprintw(wgreen, "%.02X", OBLZ[BAS_IND + CUR_IND + j]);
+                    wrefresh(wgreen);
 					/* запомнить его же в     */
 					INST[j] =   /* переменной INST,       */
-					          OBLZ [BAS_IND + CUR_IND + j];/*                        */
-				}              /*                        */
-				else INST [j] = '\x00'; /*                        */
+					          OBLZ [BAS_IND + CUR_IND + j];
+                    
+				//}
+				//else INST [j] = '\x00';
 			}
 			if ((res = T_MOP[i].BXPROG()) != 0) /* уйти в программу отобр.*/
             {
@@ -556,6 +619,8 @@ SKIP:
 	case '\x5B': P_S();
         break;
     case '\x48': P_L(); // Added by Sergey Rump
+            break;
+    case '\xD2': P_MVC();
             break;
     default:
         return 10;// Обработка инструкции ещё не сделана
@@ -714,6 +779,14 @@ CONT2:
         }
     }
     getch();*/
+    printf("\nНажмите enter, чтобы продолжить (самое время подключить отладчик)\n");
+    char t=0;
+    while(1)
+    {
+        t=getchar();
+        if(t == '\n'){break;}
+        t=0;
+    }
 	InitCurses();
 	res = sys();
 	switch (res)
@@ -780,7 +853,7 @@ ERR6:
 	goto END;
 
 ERR7:
-    printf("ADDR: 0x%lx\n",ADDR);
+    printf("ADDR: 0x%lx\n",ADDR1);
 	printf("прерывание - ошибка адресации\n");
 	goto END;
 
