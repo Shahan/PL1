@@ -1,0 +1,6 @@
+EX08:	PROC  OPTIONS  ( MAIN );
+		DCL A 	BIN FIXED  (31) INIT ( 101B );
+		DCL	B	DEC  FIXED  INIT  ( 3 );		По умолчанию на десятичное число в PL1 выделяется 3 байта
+		DCL	C	BIN    FIXED;
+		C = A = B;
+	END  EX08;

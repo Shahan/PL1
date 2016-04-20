@@ -12,7 +12,7 @@ L2       MVC   C,FALSE
          BC    15,L1          
 TRUE     DC    H'1'  
 FALSE    DC    H'0'
-A        DC    F'3' 
+A        DC    F'3'
 B        DC    DL3'3'   
          DS    0H    
 C        DC    F'0'
