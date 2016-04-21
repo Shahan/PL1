@@ -1335,7 +1335,18 @@ int AVI2 ()
 			     strlen ( FORMT [IFORMT-1] )
 			     )
 			{
-				if ( SYM [i].TYPE == 'B' ) /* если тип правого опе-  */
+                if ( SYM [i].TYPE == 'D' ) {
+                    //convert from decimal to binary
+                    //SYM [i].TYPE = 'B';
+                    
+                    //memcpy ( ASS_CARD._BUFCARD.OPERAC,
+                    //        "AH", 2 ); /* формируем код ассембле-*/
+
+                    
+                }
+
+                
+				if ( SYM [i].TYPE == 'D' || SYM [i].TYPE == 'B' ) /* если тип правого опе-  */
 				{           /* ранда bin fixed, то:   */
 
 					if ( STROKA [ DST [I2].DST4 - /* если знак опер."+",то: */
@@ -1405,6 +1416,9 @@ int AVI2 ()
 					/* пограммы               */
 				}
 				else
+                    
+                    
+                    
 					return 3; /* если тип правого опе-  */
 				/* ранда арифметического  */
 				/* выражения не bin fixed,*/
@@ -1602,7 +1616,34 @@ int OEN2 ()
 
 				ZKARD ();   /* запомнить операцию     */
 				/*    Ассемблера          */
-			}
+            } else if (SYM[i].TYPE == 'D') {
+                strcpy ( ASS_CARD._BUFCARD.METKA, /* пишем идентификатор в  */
+                        SYM [i].NAME ); /* поле метки псевдоопера-*/
+                /* ции DC                 */
+                ASS_CARD._BUFCARD.METKA [ strlen
+                                         ( ASS_CARD._BUFCARD.METKA ) ] = ' '; /* пишем разделитель полей*/
+                
+                memcpy ( ASS_CARD._BUFCARD.OPERAC, /* пишем код псевдоопера- */
+                        "DC", 2 ); /* ции DC                 */
+                
+                strcpy ( ASS_CARD._BUFCARD.OPERAND,      /* для случая слова       */ "DL3\'" );
+                
+                //Dos command
+                //  strcat ( ASS_CARD._BUFCARD.OPERAND,       /* формируем цифровую     */
+                //     ltoa ( VALUE (SYM [i].INIT),     /* часть операнда псевдо- */
+                //         &RAB [0], 10) ); /* операции,              */
+                //let's do that in Unix!
+                strcat(ASS_CARD._BUFCARD.OPERAND, gcvt(VALUE(SYM[i].INIT), 10, &RAB[0]));
+                ASS_CARD._BUFCARD.OPERAND [ strlen /* замыкающий апостроф    */
+                                           ( ASS_CARD._BUFCARD.OPERAND ) ] = '\''; /*          и             */
+                
+                memcpy ( ASS_CARD._BUFCARD.COMM, /* поле построчного комен-*/
+                        "Определение переменной", 22 ); /* тария                  */
+                
+                ZKARD ();   /* запомнить операцию     */
+                
+                
+            }
 		}
 	}
 	/* далее идет блок декла- */

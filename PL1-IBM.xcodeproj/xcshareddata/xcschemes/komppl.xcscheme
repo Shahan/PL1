@@ -46,7 +46,7 @@
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
-      useCustomWorkingDirectory = "YES"
+      useCustomWorkingDirectory = "NO"
       customWorkingDirectory = "/Users/densvr/Documents/university/5&#x438;&#x306; &#x43a;&#x443;&#x440;&#x441; 2&#x438;&#x306; &#x441;&#x435;&#x43c;&#x435;&#x441;&#x442;&#x440;/&#x421;&#x438;&#x441;&#x442;&#x435;&#x43c;&#x44b; &#x43f;&#x440;&#x43e;&#x433;&#x440;&#x430;&#x43c;&#x43c;&#x438;&#x440;&#x43e;&#x432;&#x430;&#x43d;&#x438;&#x44f; &#x420;&#x430;&#x441;&#x442;&#x43e;&#x440;&#x433;&#x443;&#x435;&#x432;/&#x43a;&#x443;&#x440;&#x441;&#x43e;&#x432;&#x438;&#x43a;/PL1"
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
