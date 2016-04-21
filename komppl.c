@@ -1380,16 +1380,16 @@ int AVI2 ()
                         
                     {
                         
-                        //MVC   CMPR,TRUE
-                        //CR    R2,R3
-                        //BC    8,L2
-                        //BC    15,L1
-                        //L2       MVC   CMPR,FALSE
-                        //L1       MVC   C,CMPR
+                        //      LH    RRAB,TRUE
+                        //      CR    R2,R3
+                        //      BC    8,L2
+                        //      BC    15,L1
+                        //L2    LH    RRAB,FALSE
+                        //L1
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "CMPR,TRUE", 9 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "LH", 2 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB,TRUE", 9 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
@@ -1408,14 +1408,14 @@ int AVI2 ()
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "L2", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "CMPR,FALSE", 10 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "LH", 2 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB,FALSE", 10 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "L1", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "C,CMPR", 6 );
-                        ZKARD ();
+                        //memcpy ( ASS_CARD._BUFCARD.OPERAC, "NOP", 3 );
+                        //memcpy ( ASS_CARD._BUFCARD.OPERAND, "", 0 );
+                        //ZKARD ();
                         
                       
                        
@@ -1462,32 +1462,7 @@ int AVI2 ()
 								memcpy( ASS_CARD._BUFCARD.OPERAC,/* иначе - "S"            */
 								        "S", 1 );
                     }
-                    
-                    else if ( STROKA [ DST [I2].DST4 - /* если же знак операции  */
-                                      strlen ( FORMT [IFORMT-1] ) ] == /* арифметического выра-  */
-                             '=' )/* жения "=", то:         */
-                        
-                    {
-                        
-                        memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
-                        strcpy ( ASS_CARD._BUFCARD.OPERAND, "BUF," );
-                        strcat ( ASS_CARD._BUFCARD.OPERAND, FORMT [IFORMT-1] );
-                        strcat ( ASS_CARD._BUFCARD.OPERAND, "\n");
-                        ZKARD ();
-                        
-                        
-                        //equal check
-                        //TODO fix it - add real asm commands
-                        if ( strcmp ( SYM [i].RAZR, "15" )/* при разрядности ариф-  */
-                            <= 0 ) /* метич.выраж.<= 15      */
-                            memcpy( ASS_CARD._BUFCARD.OPERAC,/* формируем код ассембле-*/
-                                   "?", 2 ); /* ровской операции "SH",F*/
-                        else
-                            memcpy( ASS_CARD._BUFCARD.OPERAC,/* иначе - "S"            */
-                                   "?", 1 );
-                    }
-
+                
                     else 
                     {
 
@@ -1740,7 +1715,7 @@ int OEN2 ()
                 
                 memcpy ( ASS_CARD._BUFCARD.OPERAC, /* пишем код псевдоопера- */
                         "DC", 2 ); /* ции DC                 */
-                
+            
                 strcpy ( ASS_CARD._BUFCARD.OPERAND,      /* для случая слова       */ "DL3\'" );
                 
                 //Dos command
@@ -1783,10 +1758,6 @@ int OEN2 ()
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "DC",2 );
     memcpy ( ASS_CARD._BUFCARD.OPERAND, "DL8'0'", 6 );
     ZKARD ();
-    memcpy ( ASS_CARD._BUFCARD.METKA, "CMPR", 4 );
-    memcpy ( ASS_CARD._BUFCARD.OPERAC, "DC",2 );
-    memcpy ( ASS_CARD._BUFCARD.OPERAND, "F'0'", 4 );
-    ZKARD ();
     
 
     
@@ -1825,6 +1796,7 @@ int OEN2 ()
     /*            и           */
     ZKARD ();                                 /* запоминание ее         */
 
+    
 	memcpy ( ASS_CARD._BUFCARD.OPERAC, "END", 3 ); /* формирование кода ас-  */
 	/* семблеровской псевдо-  */
 	/* операции END,          */
@@ -1883,7 +1855,6 @@ int OPA2 ()
 
 				strcat ( ASS_CARD._BUFCARD.OPERAND, /*           команды      */
 				         FORMT [0]);
-
 				ASS_CARD._BUFCARD.OPERAND [ strlen /*              и         */
 				                                    ( ASS_CARD._BUFCARD.OPERAND ) ] = ' ';
 
