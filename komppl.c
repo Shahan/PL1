@@ -353,7 +353,7 @@ struct
 	{ /*.  163     .*/ 0,   162, "*  ",    0 },
 	/*.                                              вход с символа - AVI    */
 	{ /*.  164     .*/ 165,     0, "AVI",    0 },
-	{ /*.  165     .*/ 166,   164, "ZNK",    0 },
+	{ /*.  165     .*/ 166,   164, "ZNK",   206 },
 	{ /*.  166     .*/ 167,   165, "LIT",  168 },
 	{ /*.  167     .*/ 197,   166, "AVI",    0 },
 
@@ -410,12 +410,16 @@ struct
     
     
     //DCL B DEC FIXED <> INIT
-    { /*.  204     .*/ 65,     59, "   ",    0 },
+    { /*.  204     .*/ 65,     59, "   ",    62 },
     
     
     //DCL A BIN FIXED INIT ( <33> );
     { /*.  205     .*/ 71,    70, "RZR",     0 },
-
+    
+    //C = A <=> B;
+    { /*.  206     .*/ 166,   164, "=  ",    0 },
+    
+    //TODO add NETERMINAL
 
     
     
@@ -595,7 +599,6 @@ void compress_ISXTXT()                            /* Программа упло
             
             if ( ISXTXT [ I1 ][ I2 ] != '\x0' )
             {
-                
                 if ( (ISXTXT [ I1 ][ I2 ] == ' ' || ISXTXT [ I1 ][ I2 ] == '\t' || ISXTXT [ I1 ][ I2 ] == '\n') &&
                     ( PREDSYM == ' ' || PREDSYM == '\t' || PREDSYM == '\n' || PREDSYM == ';' ||
                      PREDSYM == ')' || PREDSYM == ':' ||
@@ -636,6 +639,9 @@ void compress_ISXTXT()                            /* Программа упло
                 
             L1:
                 PREDSYM = ISXTXT [ I1 ][ I2 ];
+                if (PREDSYM == '\t') {
+                    PREDSYM = ' ';
+                }
                 STROKA [ I3 ] = PREDSYM;
                 //printf("123\n");
                 //printf("%s", STROKA[I3]);
@@ -1344,14 +1350,11 @@ int AVI2 ()
 							         "A", 1 ); /* иначе - "A"            */
 					}
 
-					else
-
-					{
-						if ( STROKA [ DST [I2].DST4 - /* если же знак операции  */
+					else if ( STROKA [ DST [I2].DST4 - /* если же знак операции  */
 						              strlen ( FORMT [IFORMT-1] ) ] == /* арифметического выра-  */
 						     '-' )/* жения "-", то:         */
 
-						{
+                    {
 							if ( strcmp ( SYM [i].RAZR, "15" )/* при разрядности ариф-  */
 							     <= 0 ) /* метич.выраж.<= 15      */
 								memcpy( ASS_CARD._BUFCARD.OPERAC,/* формируем код ассембле-*/
@@ -1359,9 +1362,25 @@ int AVI2 ()
 							else
 								memcpy( ASS_CARD._BUFCARD.OPERAC,/* иначе - "S"            */
 								        "S", 1 );
-						}
+                    }
+                    
+                    else if ( STROKA [ DST [I2].DST4 - /* если же знак операции  */
+                                      strlen ( FORMT [IFORMT-1] ) ] == /* арифметического выра-  */
+                             '=' )/* жения "-", то:         */
+                        
+                    {
+                        //TODO fix it - add real asm commands
+                        if ( strcmp ( SYM [i].RAZR, "15" )/* при разрядности ариф-  */
+                            <= 0 ) /* метич.выраж.<= 15      */
+                            memcpy( ASS_CARD._BUFCARD.OPERAC,/* формируем код ассембле-*/
+                                   "?", 2 ); /* ровской операции "SH",F*/
+                        else
+                            memcpy( ASS_CARD._BUFCARD.OPERAC,/* иначе - "S"            */
+                                   "?", 1 );
+                    }
 
-						else
+                    else 
+                    {
 
 							return 5; /* если знак операции не  */
 						/* "+" и не "-", то завер-*/
