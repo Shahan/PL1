@@ -905,23 +905,32 @@ char NFIL [30]="\x0";                             /* хранилище имен
 /* лируемой программы     */
 
 /*..........................................................................*/
+/* п р о г р а м м а      */
+/* перевода двоичной      */
+/* константы из ASCIIz-ви-*/
+/* да во внутреннее пред- */
+/* ставление типа long int*/
+long int VALUE ( char* s )
+{
+    long int S;
+    unsigned long length = strlen(s);
+    if (s[length - 1] == 'B') {
+        int i;
+	
+        i = 0;
+        S = 0;
+        while ( *(s + i) != 'B' )
 
-long int VALUE ( char* s )                        /* п р о г р а м м а      */
-{                                                 /* перевода двоичной      */
-	long int S;                               /* константы из ASCIIz-ви-*/
-	int i;                                    /* да во внутреннее пред- */
-	/* ставление типа long int*/
-	i = 0;
-	S = 0;
-	while ( *(s + i) != 'B' )
+        {
 
-	{
-
-		S <<= 1;
-		if ( *(s + i) == '1' )
-			S++;
-		i++;
-	}
+            S <<= 1;
+            if ( *(s + i) == '1' )
+                S++;
+            i++;
+        }
+    } else {
+        S = atoi(s);
+    }
 
 	return (S);
 }
@@ -1132,15 +1141,22 @@ int ODC1 ()
 		/* по ошибке              */
 	}
 
-ODC11:                                            /* если идентификатор     */
-	/* имеет начальную иници- */
-	if ( !strcmp ( FORMT [5], "INIT" )  )     /* ализацию, то запомина- */
-		strcpy ( SYM [ISYM++].INIT, FORMT [6] ); /* ем в табл. SYM это на- */
-	/* чальное значение, а    */
-	else                                      /* иначе                  */
-		strcpy ( SYM [ISYM++].INIT, "0B" ); /* инициализируем иденти- */
-	/* фикатор нулем          */
-
+ODC11:
+    if ( !strcmp(FORMT[4], "INIT")) {
+        //init without range description
+        strcpy ( SYM [ISYM++].INIT, FORMT [5] ); /* ем в табл. SYM это на- */
+        ISYM++;
+    } else {
+        //range described before init
+        /* если идентификатор     */
+        /* имеет начальную иници- */
+        if ( !strcmp ( FORMT [5], "INIT" )  )     /* ализацию, то запомина- */
+            strcpy ( SYM [ISYM++].INIT, FORMT [6] ); /* ем в табл. SYM это на- */
+        /* чальное значение, а    */
+        else                                      /* иначе                  */
+            strcpy ( SYM [ISYM++].INIT, "0B" ); /* инициализируем иденти- */
+        /* фикатор нулем          */
+    }
 	return 0;                                 /* успешное завешение     */
 	/* программы              */
 }
@@ -1353,7 +1369,9 @@ int AVI2 ()
                     
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                     memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
-                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "BUF," );
+                    //TODO what to do if razr will be set later after initialization?
+                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "BUF+5," );
+                    
                     strcat ( ASS_CARD._BUFCARD.OPERAND, FORMT [IFORMT-1] );
                     strcat ( ASS_CARD._BUFCARD.OPERAND, "\n");
                     ZKARD ();
@@ -1697,7 +1715,9 @@ int OEN2 ()
 //     ltoa ( VALUE (SYM [i].INIT),     /* часть операнда псевдо- */
 //         &RAB [0], 10) ); /* операции,              */
 //let's do that in Unix!
-				strcat(ASS_CARD._BUFCARD.OPERAND, gcvt(VALUE(SYM[i].INIT), 10, &RAB[0]));
+                long int val = VALUE(SYM[i].INIT);
+                //printf("%d",val);
+				strcat(ASS_CARD._BUFCARD.OPERAND, gcvt(val, 10, &RAB[0]));
 				ASS_CARD._BUFCARD.OPERAND [ strlen /* замыкающий апостроф    */
 				                                    ( ASS_CARD._BUFCARD.OPERAND ) ] = '\''; /*          и             */
 
