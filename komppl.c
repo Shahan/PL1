@@ -1356,7 +1356,8 @@ int AVI2 ()
                 
                 if ( SYM [i].TYPE == 'D' ) {
                     //convert from decimal to binary
-                    //MVC   BUF,B
+                    //L     RRAB,B
+                    //ST    RRAB,BUF+5
                     //CVB   R3,BUF
                     
                     /*
@@ -1368,12 +1369,16 @@ int AVI2 ()
                      */
                     
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
-                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "L", 1 );
                     //TODO what to do if razr will be set later after initialization?
-                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "BUF+5," );
-                    
+                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB," );
                     strcat ( ASS_CARD._BUFCARD.OPERAND, FORMT [IFORMT-1] );
                     strcat ( ASS_CARD._BUFCARD.OPERAND, "\n");
+                    ZKARD ();
+                    
+                    memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "ST",2 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB,BUF+5", 10 );
                     ZKARD ();
                     
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
