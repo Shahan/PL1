@@ -1,6 +1,6 @@
 #define DL_ASSTEXT 64
 #define DL_OBJTEXT 50                             /*длина об'ектн. текста   */
-#define NSYM 512                                   /*размер табл.символов    */
+#define NSYM 128                                   /*размер табл.символов    */
 #define NPOP 6                                    /*размер табл.псевдоопер. */
 #define NOP  11                                   /*размер табл.операций    */
 #include <string.h>                               /*вкл.строковые подпрогр. */
