@@ -13,7 +13,8 @@ L2       LH    RRAB,FALSE
 L1       ST    RRAB,C          
          BCR   15,14           
 TRUE     DC    H'1'            
-FALSE    DC    H'0'            
+FALSE    DC    H'0'  
+         DS    0H            
 A        DC    F'3'            
 B        DC    DL3'3'          
          DS    0H              
