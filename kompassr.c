@@ -1,6 +1,6 @@
 #define DL_ASSTEXT 64
 #define DL_OBJTEXT 50                             /*длина об'ектн. текста   */
-#define NSYM 20                                   /*размер табл.символов    */
+#define NSYM 128                                   /*размер табл.символов    */
 #define NPOP 6                                    /*размер табл.псевдоопер. */
 #define NOP  11                                   /*размер табл.операций    */
 #include <string.h>                               /*вкл.строковые подпрогр. */
@@ -323,8 +323,37 @@ union                                             /*определить об'е
 	struct STR_BUF_END STR_END;               /*структура буфера        */
 	unsigned char BUF_END [80];               /*буфер карты ESD         */
 } END;
-
-
+#define maxMoreSym 8
+void genMoreSymbols(char SYM[8])
+{
+    if(memcmp(SYM, "BUF", 3*sizeof(char))!=0)
+    {
+        return;
+    }
+    char newSym[8];
+    memcpy(newSym, SYM, 8*sizeof(char));
+    int last=0;
+    for(last = 0;last<8;last++)
+    {
+        if(newSym[last] == ' ')
+        {
+            break;
+        }
+    }
+    if(last > 6){return;}
+    int dig=last+1;
+    newSym[last]='+';
+    for(int i=1;i<maxMoreSym;i++)
+    {
+        newSym[dig]='0'+i;
+        ITSYM += 1;
+        PRNMET = 'Y';                     /* устан.призн.налич.метки*/
+        memcpy ( T_SYM[ITSYM].IMSYM,      /* запомнить имя символа  */
+                newSym, 8 ); /* и                      */
+        T_SYM[ITSYM].ZNSYM = CHADR;       /* его значение(отн.адр.) */
+        T_SYM[ITSYM].DLSYM = 1;
+    }
+}
 /*
  ******* Б Л О К  об'явлений подпрограмм, используемых при 1-ом просмотре
  */
@@ -1302,6 +1331,7 @@ main1:
 		memcpy ( T_SYM[ITSYM].IMSYM,      /* запомнить имя символа  */
 		         TEK_ISX_KARTA.STRUCT_BUFCARD.METKA, 8 ); /* и                      */
 		T_SYM[ITSYM].ZNSYM = CHADR;       /* его значение(отн.адр.) */
+        genMoreSymbols(TEK_ISX_KARTA.STRUCT_BUFCARD.METKA);
 
 /*
  ***** Б Л О К  поиска текущей операции среди псевдоопераций
