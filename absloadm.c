@@ -117,6 +117,7 @@ unsigned char OBLZ [DOBLZ];                       /*область загруз�
  ***** ТАБЛИЦА машинных операций
  */
 
+typedef unsigned char byte;
 struct TMOP                                       /*структ.стр.табл.маш.опер*/
 {
 	unsigned char MNCOP [5];                  /*мнемокод операции       */
@@ -133,7 +134,7 @@ struct TMOP                                       /*структ.стр.табл
 	{{'S', ' ', ' ', ' ', ' '}, '\x5B', 4, FRX}, /*                        */
     {{'M', 'V', 'C', ' ', ' '}, '\xD2', 4, FXX}, /* ADDED BY SERGEY RUMP   */
     {{'C', 'V', 'B', ' ', ' '}, '\x4F', 4, FRX},
-    {{'C', 'R', ' ', ' ', ' '}, '\x19', 4, FRX},
+    {{'C', 'R', ' ', ' ', ' '}, '\x19', 2, FRR},
     {{'B', 'C', ' ', ' ', ' '}, '\x47', 4, FRX},
     {{'L', 'H', ' ', ' ', ' '}, '\x48', 4, FRX},
 };
@@ -262,6 +263,14 @@ int P_MVC()
 }
 int P_CVB()
 {
+    int sm;                                   /*рабочая переменная      */
+    ADDR1 = VR[B] + VR[X] + D;                 /*вычисление рабочего     */
+    sm = ( int ) ( ADDR1 - I );                /*адреса и смещения       */
+    ARG = OBLZ[BAS_IND + CUR_IND + sm] * 0x1000000L+/*формирование содержимого*/
+    OBLZ[BAS_IND + CUR_IND + sm + 1] * 0x10000L +/*второго операнда в сог- */
+    OBLZ[BAS_IND + CUR_IND + sm + 2] * 0x100 + /*лашениях ЕС ЭВМ         */
+    OBLZ[BAS_IND + CUR_IND + sm + 3];   /*                        */
+    VR[R1] = ARG;
     return 0;
 }
 int P_CR()
@@ -286,7 +295,7 @@ int P_CR()
 int P_BC()
 {
     int mask=R1;
-    if(PSW & mask)
+    if(PSW == mask)
     {
         ADDR1 = VR[B] + VR[X] + D;
         int sm = ( int ) ( ADDR1 -I );
@@ -316,7 +325,7 @@ int FRR(void)
 			j = INST[1] % 0x10;
 			R2 = j;
 			wprintw(wgreen, "%1d \n", j);
-			break;
+            break;
 		}
 	}
 
@@ -490,7 +499,7 @@ int sys(void)
 	wbkgd(wred, COLOR_PAIR(COLOR_RED));
 
 //поле регистров
-	wblue = newwin(16, 12, 0, 68);
+	wblue = newwin(17, 12, 0, 68);
 	wbkgd(wblue, COLOR_PAIR(COLOR_BLUE));
 
 //текст
@@ -509,6 +518,7 @@ BEGIN:
 //совпадениизапомнить номер строки таблицы операций
 	for (i = 0; i < NOP; i++)
 	{
+        int currentOperationCode = OBLZ[BAS_IND + CUR_IND];
 		if (OBLZ[BAS_IND + CUR_IND] == T_MOP[i].CODOP)
 		{
 			k = i;
@@ -557,7 +567,6 @@ l0:
 		}
 	}
 	wrefresh(wgreen);
-
 	I += T_MOP[k].DLOP;                      /*коррекция счет-ка.адреса*/
 	CUR_IND = ( int ) ( I - BAS_ADDR );      /*уст-ка текущ. индекса   */
 	/*в массиве OBLZ          */
@@ -573,6 +582,7 @@ l0:
 		wprintw(wblue, "%d:", i);
 		wprintw(wblue, "%.08lX", VR[i]);
 	}
+    wprintw(wblue, "PSW:%08lX\n",PSW);
 	wrefresh(wblue); //вывод на экран
 	wclear(wblue); //очистка окна регистров
 	wind();
