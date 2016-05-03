@@ -73,8 +73,9 @@ int R1,                                           /*номер 1-го регис
     D,                                            /*смещение в формате RX   */
     X,                                            /*номер индексн. регистра */
 /*в формате RX            */
-    B;                                            /*номер базового регистра */
+    B,                                            /*номер базового регистра */
 /*в формате RX            */
+    PSW;
 unsigned long I,                                  /*счетчик адр.тек.ком-ды  */
               BAS_ADDR,                     /*адрес начала обл.загруз.*/
               I1,ADDR1,ADDR2,ARG,VS;               /*вспомогательные перем.  */
@@ -85,9 +86,9 @@ unsigned long VR[16],                             /*массив,содерж.з
 int x,y,i,j,k,kk;                                 /*рабочие переменные      */
 
 int CUR_IND;                                      /*индекс масс.обл.загр.,  */
-/*соотв.текущ.ком-де прогр*/
+                                                  /*соотв.текущ.ком-де прогр*/
 int BAS_IND;                                      /*индекс масс.обл.загр.,  */
-/*соотв.первой ком-ды прог*/
+                                                  /*соотв.первой ком-ды прог*/
 
 union U1                                          /*постоянная часть шабло- */
 {                                                 /*на отсветки регистров на*/
@@ -257,6 +258,41 @@ int P_S()                                         /* п р о г р а м м а 
 
 int P_MVC()
 {
+    return 0;
+}
+int P_CVB()
+{
+    return 0;
+}
+int P_CR()
+{
+    if(VR[R1]==VR[R2])
+    {
+        PSW = 15;
+    }
+    else
+    {
+        if(VR[R1]>VR[R2])
+        {
+            PSW = 8;
+        }
+        else//(VR[R1]<VR[R2])
+        {
+            PSW = 9;
+        }
+    }
+    return 0;
+}
+int P_BC()
+{
+    int mask=R1;
+    if(PSW & mask)
+    {
+        ADDR1 = VR[B] + VR[X] + D;
+        int sm = ( int ) ( ADDR1 -I );
+        int idx = BAS_IND + CUR_IND + sm;
+        CUR_IND = idx;
+    }
     return 0;
 }
 
@@ -619,6 +655,12 @@ SKIP:
     case '\x48': P_L(); // Added by Sergey Rump
             break;
     case '\xD2': P_MVC();
+            break;
+    case '\x4F': P_CVB();
+            break;
+    case '\x19': P_CR();
+            break;
+    case '\x47': P_BC();
             break;
     default:
         return 10;// Обработка инструкции ещё не сделана
