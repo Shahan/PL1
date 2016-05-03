@@ -1356,7 +1356,8 @@ int AVI2 ()
                 
                 if ( SYM [i].TYPE == 'D' ) {
                     //convert from decimal to binary
-                    //MVC   BUF,B
+                    //L     RRAB,B
+                    //ST    RRAB,BUF+5
                     //CVB   R3,BUF
                     
                     /*
@@ -1368,12 +1369,16 @@ int AVI2 ()
                      */
                     
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
-                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "L", 1 );
                     //TODO what to do if razr will be set later after initialization?
-                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "BUF+5," );
-                    
+                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB," );
                     strcat ( ASS_CARD._BUFCARD.OPERAND, FORMT [IFORMT-1] );
                     strcat ( ASS_CARD._BUFCARD.OPERAND, "\n");
+                    ZKARD ();
+                    
+                    memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "ST",2 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB,BUF+5", 10 );
                     ZKARD ();
                     
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
@@ -1693,6 +1698,14 @@ int OEN2 ()
 			if ( SYM [i].TYPE == 'B' ) /* если тип оператора bin */
 			/* fixed, то:             */
 			{
+                //reserve bytes before binary (unnessecary in some cases)
+                //         DS    0H
+                memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
+                memcpy ( ASS_CARD._BUFCARD.OPERAC, "DS",2 );
+                memcpy ( ASS_CARD._BUFCARD.OPERAND, "0H", 2 );
+                ZKARD ();
+                
+                
 				strcpy ( ASS_CARD._BUFCARD.METKA, /* пишем идентификатор в  */
 				         SYM [i].NAME ); /* поле метки псевдоопера-*/
 				/* ции DC                 */
@@ -1751,15 +1764,6 @@ int OEN2 ()
                         "Определение переменной", 22 ); /* тария                  */
                 
                 ZKARD ();   /* запомнить операцию     */
-            
-                //shift after decimal
-                //         DS    0H
-                memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
-                memcpy ( ASS_CARD._BUFCARD.OPERAC, "DS",2 );
-                memcpy ( ASS_CARD._BUFCARD.OPERAND, "0H", 2 );
-                ZKARD ();
-                
-                
                 
             }
 		}
