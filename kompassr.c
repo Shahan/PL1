@@ -147,7 +147,7 @@ struct TMOP                                       /*структ.стр.табл
 	{{'S',' ',' ',' ',' '}, '\x5B', 4, FRX},  /*                        */
     {{'M','V','C',' ',' '}, '\xD2', 4, FXX},  /* ADDED BY SERGEY RUMP   */
     {{'C','V','B',' ',' '}, '\x4F', 4, FRX},
-    {{'C','R',' ',' ',' '}, '\x19', 4, FRX},
+    {{'C','R',' ',' ',' '}, '\x19', 2, FRR},
     {{'B','C',' ',' ',' '}, '\x47', 4, FRX},
     {{'L','H',' ',' ',' '}, '\x48', 4, FRX},
     
@@ -1382,19 +1382,18 @@ CONT2:
 CONT3:
         printf("\n\n\n\n");
 
-	T_MOP[0].BXPROG = SRR;                    /*установить указатели    */
-	T_MOP[1].BXPROG = SRR;                    /*на подпрограммы обраб-ки*/
-	T_MOP[2].BXPROG = SRX;                    /*команд АССЕМБЛЕРА при   */
-	T_MOP[3].BXPROG = SRX;                    /*втором просмотре        */
-	T_MOP[4].BXPROG = SRX;
-	T_MOP[5].BXPROG = SRX;
+	T_MOP[0].BXPROG = SRR; // BALR            /*установить указатели    */
+	T_MOP[1].BXPROG = SRR; // BCR             /*на подпрограммы обраб-ки*/
+	T_MOP[2].BXPROG = SRX; // ST              /*команд АССЕМБЛЕРА при   */
+	T_MOP[3].BXPROG = SRX; // L               /*втором просмотре        */
+	T_MOP[4].BXPROG = SRX; // A
+	T_MOP[5].BXPROG = SRX; // S
     
-    T_MOP[6].BXPROG = SXX;
-    T_MOP[7].BXPROG = SRX;
-    T_MOP[8].BXPROG = SRX;
-    T_MOP[9].BXPROG = SRX;
-    T_MOP[10].BXPROG = SRX;
-    T_MOP[11].BXPROG = SRX;
+    T_MOP[6].BXPROG = SRX; // MVC
+    T_MOP[7].BXPROG = SRX; // CVB
+    T_MOP[8].BXPROG = SRR; // CR
+    T_MOP[9].BXPROG = SRX; // BC
+    T_MOP[10].BXPROG = SRX; // LH
 
     
 	T_POP[0].BXPROG = SDC;                    /*установить указатели    */
