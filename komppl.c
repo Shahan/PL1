@@ -1427,6 +1427,11 @@ int AVI2 ()
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "9,L2", 4 );
+                        ZKARD ();
+                        
+                        memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAND, "15,L1", 5 );
                         ZKARD ();
                         
