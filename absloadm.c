@@ -301,6 +301,7 @@ int P_BC()
         int sm = ( int ) ( ADDR1 -I );
         int idx = BAS_IND + CUR_IND + sm;
         CUR_IND = idx;
+        I = ADDR1;
     }
     return 0;
 }
