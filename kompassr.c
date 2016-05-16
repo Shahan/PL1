@@ -1360,7 +1360,7 @@ CONT3:
 	T_MOP[4].BXPROG = SRX; // A
 	T_MOP[5].BXPROG = SRX; // S
     
-    T_MOP[6].BXPROG = SRX; // MVC
+    T_MOP[6].BXPROG = SSS; // MVC
     T_MOP[7].BXPROG = SRX; // CVB
     T_MOP[8].BXPROG = SRR; // CR
     T_MOP[9].BXPROG = SRX; // BC

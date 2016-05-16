@@ -691,7 +691,8 @@ SKIP:
         break;
     case '\x48': P_L(); // Added by Sergey Rump
             break;
-    case '\xD2': P_MVC();
+    //case '\xD2': P_MVC();
+    case 210: P_MVC();
             break;
     case '\x4F': P_CVB();
             break;
