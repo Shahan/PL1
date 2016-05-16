@@ -259,22 +259,23 @@ int P_S()                                         /* п р о г р а м м а 
 
 int P_MVC()
 {
-    int i;
-    /* Óñòàíîâêà àäðåñîâ */
-    ADDR1  = VR[B] + D;
+    //PRINT("MVC - change addr - %0lX %d\n", ADDR, L);
+    //PRINT("B1 %d, D1 %d, B2 %d, D2 %d, L %d\n", B1, D1, B2, D2, L);
+    
+    int sm1, sm2, i;
+    
+    ADDR1 = VR[B] + D;
+    sm1 = (int) ( ADDR1 - I );
     ADDR2 = VR[B2] + D2;
-    /* Óñòàíîâêà ñìåùåíèÿ */
-    int sm  = (int) (ADDR1-I);
-    int sm2 = (int) (ADDR2-I);
-    /* Ïåðåìåùåíèå äàííûõ */
-    if (LENGTH == 3)
+    sm2 = (int) ( ADDR2 - I );
+    
+    for (i=0; i<LENGTH; i++)
     {
-        sm2++;
+        // PRINT("%d\n", OBLZ[BAS_IND + CUR_IND + sm1 + i]); //OBLZ[VR[B2] + VR[X] + D2 + i];
+        OBLZ[BAS_IND + CUR_IND + sm1 + i] = OBLZ[BAS_IND + CUR_IND + sm2 + i];
     }
-    for (i = 0; i<LENGTH; i++)
-    {
-        // OBLZ[BAS_IND + CUR_IND + sm+i] = OBLZ[BAS_IND + CUR_IND + sm2+i];
-    }
+    
+    ADDR1 = VR[B] + VR[X] + D;
     
     return 0;
 }

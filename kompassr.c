@@ -112,6 +112,7 @@ union                                             /*определить об'е
 
 int CHADR;                                        /*счетчик                 */
 
+unsigned char PL8_buf[8];
 /*
  ***** ТАБЛИЦА символов
  */
@@ -228,26 +229,23 @@ struct OPRX                                       /*структ.буф.опер
 	/*D2 - смещен.относит.базы*/
 };
 
-struct OPXX                                       /*структ.буф.опер.форм.RX */
+struct OPSS                                       /*структ.буф.опер.форм.XX */
 {
-    unsigned char OP;                         /*код операции            */
-    short B1D1;                       /*R1 - первый операнд     */
-    short B2D2;                                 /*X2 - второй операнд     */
-    //    int B2D2;                                     /*X2 - второй операнд     */
-    /*B2 - баз.рег.2-го оп-да */
-    /*D2 - смещен.относит.базы*/
+    unsigned char OP;                             
+    unsigned char L1L2;                           
+    short B1D1;
+    short B2D2;
 };
-
+union
+{
+    unsigned char BUF_OP_SS [6];
+    struct OPSS OP_SS;
+} SS;
 union                                             /*определить об'единение  */
 {
 	unsigned char BUF_OP_RX [4];              /*оределить буфер         */
 	struct OPRX OP_RX;                        /*структурировать его     */
 } RX;
-union                                             /*определить об'единение  */
-{
-    unsigned char BUF_OP_XX [6];              /*оределить буфер         */
-    struct OPXX OP_XX;                        /*структурировать его     */
-} XX;
 
 
 struct STR_BUF_ESD                                /*структ.буфера карты ESD */
@@ -563,8 +561,12 @@ void STXT( int ARG )                              /*подпр.формир.TXT-
             TXT.STR_TXT.DLNOP [1] = 4;
             break;
         case 6:
-            memcpy ( TXT.STR_TXT.OPER, XX.BUF_OP_XX, 6);/* для RX-формата         */
+            memcpy ( TXT.STR_TXT.OPER , SS.BUF_OP_SS , 6);/* XX - format         */
             TXT.STR_TXT.DLNOP [1] = 6;
+            break;
+        case 8:
+            memcpy ( TXT.STR_TXT.OPER , PL8_buf , 8);
+            TXT.STR_TXT.DLNOP [1] = 8;
             break;
         default:
             printf("Ошибка при форм. TXT-карты: ARG = %i\n",ARG);
@@ -1052,7 +1054,7 @@ int SSS()                                         /*подпр.обр.опер.X
         return 2; // another error code?
     }
     
-    STXT(6,0); 
+    STXT(6); 
     return 0;
 }
 /*..........................................................................*/
@@ -1421,4 +1423,47 @@ CONT6:
     printf("%s\n",TEK_ISX_KARTA.BUFCARD);
 	return 0;
 }                                                 /*конец main-программы    */
+/* return index in identifier's table or -1 if value doesn't exist */
 
+int get_symbol_index (const char* METKA)
+{
+    for (int i = 0; i<=ITSYM; i++ )
+    {
+        if(!strncmp ( METKA , (char*) T_SYM[i].IMSYM, 8 ))
+        {
+            return i;
+        }
+    }
+    
+    return -1;
+}
+
+/* return absolute addr from relative or -1 on error */
+
+int get_full_addr (int relative_addr)
+{
+    int NBASRG = 0;
+    int DELTA  = 0xFFF - 1;
+    
+    for (int I=0; I<15; I++)
+    {
+        if (
+            T_BASR[I].PRDOST == 'Y'                 &&
+            relative_addr - T_BASR[I].SMESH >= 0    &&
+            relative_addr - T_BASR[I].SMESH < DELTA
+            )
+        {
+            NBASRG = I + 1;
+            DELTA  = relative_addr - T_BASR[I].SMESH;
+        }
+    }
+    
+    if ( NBASRG == 0 || DELTA > 0xFFF )
+    {
+        return -1;
+    }
+    else
+    {
+        return (NBASRG << 12) + DELTA;
+    }
+}
