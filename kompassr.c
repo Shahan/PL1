@@ -1093,8 +1093,9 @@ int SSS()                                         /*подпр.обр.опер.X
     printf ("%s\n", (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
     char op1[8], op2[8];
     int offset, length, B1D1, B2D2;
+    int res = sscanf ((char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND, "%8[^+]+%d(%d),%8s", op1, &offset, &length, op2);
     
-    if (4 == sscanf ((char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND, "%8[^+]+%d(%d),%8s", op1, &offset, &length, op2)) {
+    if (4 == res) {
         printf ("%s %s %d %d\n", op1, op2, offset, length);
         
         int ide1, ide2;

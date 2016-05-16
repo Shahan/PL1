@@ -38,6 +38,7 @@ struct STR_BUF_TXT                                /*структ.буфера к
 	unsigned char POLE9  [ 8];                /*идентификационное поле  */
 };
 
+void writeMemory(const char * fileName);
 
 union                                             /*определить об'единение  */
 {
@@ -133,7 +134,7 @@ struct TMOP                                       /*структ.стр.табл
 	{{'L', ' ', ' ', ' ', ' '}, '\x58', 4, FRX}, /*машинных                */
 	{{'A', ' ', ' ', ' ', ' '}, '\x5A', 4, FRX}, /*операций                */
 	{{'S', ' ', ' ', ' ', ' '}, '\x5B', 4, FRX}, /*                        */
-    {{'M', 'V', 'C', ' ', ' '}, '\xD2', 4, FSS}, /* ADDED BY SERGEY RUMP   */
+    {{'M', 'V', 'C', ' ', ' '}, '\xD2', 6, FSS}, /* ADDED BY SERGEY RUMP   */
     {{'C', 'V', 'B', ' ', ' '}, '\x4F', 4, FRX},
     {{'C', 'R', ' ', ' ', ' '}, '\x19', 2, FRR},
     {{'B', 'C', ' ', ' ', ' '}, '\x47', 4, FRX},
@@ -261,7 +262,7 @@ int P_MVC()
 {
     //PRINT("MVC - change addr - %0lX %d\n", ADDR, L);
     //PRINT("B1 %d, D1 %d, B2 %d, D2 %d, L %d\n", B1, D1, B2, D2, L);
-    
+    writeMemory("BEFORE_MVC.txt");
     int sm1, sm2, i;
     
     ADDR1 = VR[B] + D;
@@ -273,10 +274,11 @@ int P_MVC()
     {
         // PRINT("%d\n", OBLZ[BAS_IND + CUR_IND + sm1 + i]); //OBLZ[VR[B2] + VR[X] + D2 + i];
         OBLZ[BAS_IND + CUR_IND + sm1 + i] = OBLZ[BAS_IND + CUR_IND + sm2 + i];
+        //OBLZ[sm1] = OBLZ[sm2]; // совсем неверно, но ближе к нашему случаю. ХЗ, почему
     }
     
     ADDR1 = VR[B] + VR[X] + D;
-    
+    writeMemory("AFTER_MVC.txt");
     return 0;
 }
 
@@ -439,11 +441,6 @@ int FSS(void)
             // ADDR = VR[B1] + D1;
             ADDR1 = VR[B] + VR[X] + D;
             wprintw(wgreen,"  %.06lX   \n", ADDR1);
-            if (ADDR1 % 4 != 0)
-            {
-                // PRINT("FSS - bad addr - %0lX\n", ADDR);
-                // return (7);
-            }
             
             break;
         }
@@ -946,4 +943,13 @@ ERR9:
 ERR10:
     printf ( "%s'%s'\n", "Не обработанная инструкция ",opname);
     goto END;
+}
+void writeMemory(const char * fileName)
+{
+    FILE * f = fopen(fileName, "wt");
+    for(int i = 0; i < DOBLZ; i++)
+    {
+        fprintf(f, "%d) %d\n", i, (int)(OBLZ[i]));
+    }
+    fclose(f);
 }
