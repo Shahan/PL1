@@ -60,7 +60,7 @@ int FRR();                                        /*подпр.обр.опер.R
 int FRX();                                        /*подпр.обр.опер.RX-форм. */
 /*..........................................................................*/
 /*п р о т о т и п  обращ.к*/
-int FXX();/*подпр.обр.опер.XX-форм. */
+int FSS();/*подпр.обр.опер.XX-форм. */
 /*..........................................................................*/
 
 
@@ -70,12 +70,13 @@ int R1,                                           /*номер 1-го регис
 /*ранда в форматах RR и RX*/
     R2,                                           /*номер 2-го регистра-опе-*/
 /*ранда в формате RX      */
-    D,                                            /*смещение в формате RX   */
-    X,                                            /*номер индексн. регистра */
+    D,D2,                                            /*смещение в формате RX   */
+    X,X2,                                            /*номер индексн. регистра */
 /*в формате RX            */
-    B,                                            /*номер базового регистра */
+    B,B2,                                            /*номер базового регистра */
 /*в формате RX            */
-    PSW;
+    PSW,
+LENGTH,LENGTH2;
 unsigned long I,                                  /*счетчик адр.тек.ком-ды  */
               BAS_ADDR,                     /*адрес начала обл.загруз.*/
               I1,ADDR1,ADDR2,ARG,VS;               /*вспомогательные перем.  */
@@ -132,7 +133,7 @@ struct TMOP                                       /*структ.стр.табл
 	{{'L', ' ', ' ', ' ', ' '}, '\x58', 4, FRX}, /*машинных                */
 	{{'A', ' ', ' ', ' ', ' '}, '\x5A', 4, FRX}, /*операций                */
 	{{'S', ' ', ' ', ' ', ' '}, '\x5B', 4, FRX}, /*                        */
-    {{'M', 'V', 'C', ' ', ' '}, '\xD2', 4, FXX}, /* ADDED BY SERGEY RUMP   */
+    {{'M', 'V', 'C', ' ', ' '}, '\xD2', 4, FSS}, /* ADDED BY SERGEY RUMP   */
     {{'C', 'V', 'B', ' ', ' '}, '\x4F', 4, FRX},
     {{'C', 'R', ' ', ' ', ' '}, '\x19', 2, FRR},
     {{'B', 'C', ' ', ' ', ' '}, '\x47', 4, FRX},
@@ -256,11 +257,28 @@ int P_S()                                         /* п р о г р а м м а 
 	return 0;                                 /*успешное заверш.прогр.  */
 }
 
-
 int P_MVC()
 {
+    int i;
+    /* Óñòàíîâêà àäðåñîâ */
+    ADDR1  = VR[B] + D;
+    ADDR2 = VR[B2] + D2;
+    /* Óñòàíîâêà ñìåùåíèÿ */
+    int sm  = (int) (ADDR1-I);
+    int sm2 = (int) (ADDR2-I);
+    /* Ïåðåìåùåíèå äàííûõ */
+    if (LENGTH == 3)
+    {
+        sm2++;
+    }
+    for (i = 0; i<LENGTH; i++)
+    {
+        // OBLZ[BAS_IND + CUR_IND + sm+i] = OBLZ[BAS_IND + CUR_IND + sm2+i];
+    }
+    
     return 0;
 }
+
 int P_CVB()
 {
     int sm;                                   /*рабочая переменная      */
@@ -373,58 +391,65 @@ int FRX(void)
 	return 0;
 }
 //...........................................................................
-int FXX(void)
+
+int FSS(void)
 {
     int i, j;
-    refresh();
+    
+    //PRINT("FSS - change addr - %0lX\n", ADDR1);
+    
     for (i = 0; i < NOP; i++)
     {
         if (INST[0] == T_MOP[i].CODOP)
         {
-            waddstr(wgreen, " ");
+            waddstr(wgreen, "  ");
             for (j = 0; j < 5; j++)
                 waddch(wgreen, T_MOP[i].MNCOP[j]);
             waddstr(wgreen, " ");
-            //ADDR1
+            
+            // Вычисляем L
+            j = INST[1];
+            LENGTH = j + 1;
+            
+            // Вычисляем B1 (первые 4 бита)
+            j = INST[2] >> 4;
+            B = j;
+            
+            // Вычисляем D1 (вторые 12 бит)
             j = INST[2] % 16;
             j = j * 256 + INST[3];
             D = j;
-            wprintw(wgreen, "X'%.3X'(", j);
             
-            j = INST[1] % 16;
-            X = j;
-            wprintw(wgreen, "%1d, ", j);
+            // Вывод первого операнда
+            wprintw(wgreen, "X'%.3X'(%.1d,%1d), ", D, LENGTH, B);
             
-            j = INST[2] >> 4;
-            B = j;
-            wprintw(wgreen, "%1d)", j);
+            // Вычисляем B2 (первые 4 бита)
+            j = INST[4] >> 4;
+            B2 = j;
             
-            ADDR1 = VR[B] + VR[X] + D;
-            wprintw(wgreen," %.06lX ", ADDR1);
-            //ADDR2
+            // Вычисляем D2 (вторые 12 бит)
             j = INST[4] % 16;
-            j = j * 256 + INST[3];
-            D = j;
-            wprintw(wgreen, "X'%.3X'(", j);
+            j = j * 256 + INST[5];
+            D2 = j;
             
-            j = INST[1] % 16;
-            X = j;
-            wprintw(wgreen, "%1d, ", j);
+            // Вывод второго операнда
+            wprintw(wgreen, "X'%.3X'(%1d)", D2, B2);
             
-            j = INST[2] >> 4;
-            B = j;
-            wprintw(wgreen, "%1d)", j);
+            // ADDR = VR[B1] + D1;
+            ADDR1 = VR[B] + VR[X] + D;
+            wprintw(wgreen,"  %.06lX   \n", ADDR1);
+            if (ADDR1 % 4 != 0)
+            {
+                // PRINT("FSS - bad addr - %0lX\n", ADDR);
+                // return (7);
+            }
             
-            ADDR2 = VR[B] + VR[X] + D;
-            wprintw(wgreen," %.06lX\n", ADDR1);
-            /*if (ADDR % 4 != 0) // TODO: FIX alignement in kompassr
-             return (7);*/
             break;
         }
     }
+    
     return 0;
 }
-
 //...........................................................................
 //---------------------------------------------------------------------------
 int wind(void)
