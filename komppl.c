@@ -1367,7 +1367,10 @@ int AVI2 ()
                     strcat ( ASS_CARD._BUFCARD.OPERAND, FORMT [IFORMT-1] );
                     ZKARD ();
                      */
+                   
                     
+                    
+                    /*
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                     memcpy ( ASS_CARD._BUFCARD.OPERAC, "L", 1 );
                     //TODO what to do if razr will be set later after initialization?
@@ -1379,7 +1382,18 @@ int AVI2 ()
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                     memcpy ( ASS_CARD._BUFCARD.OPERAC, "ST",2 );
                     memcpy ( ASS_CARD._BUFCARD.OPERAND, "RRAB,BUF+5", 10 );
+                    ZKARD ();*/
+                    
+                    
+                    memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
+                    memcpy ( ASS_CARD._BUFCARD.OPERAC, "MVC", 3 );
+                    //TODO what to do if razr will be set later after initialization?
+                    strcpy ( ASS_CARD._BUFCARD.OPERAND, "BUF+5(3)," );
+                    strcat ( ASS_CARD._BUFCARD.OPERAND, FORMT [IFORMT-1] );
+                    strcat ( ASS_CARD._BUFCARD.OPERAND, "\n");
                     ZKARD ();
+                    
+                    
                     
                     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                     memcpy ( ASS_CARD._BUFCARD.OPERAC, "CVB",3 );
