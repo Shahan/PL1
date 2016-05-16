@@ -16,7 +16,15 @@ char NFIL [30] = "\x0";
 
 unsigned char PRNMET = 'N';                       /*индикатор обнаруж.метки */
 int I3;                                           /*счетчик цикла           */
-
+void print_pl_value (unsigned char* buf, size_t len)
+{
+    for ( size_t i = 0; i < len; ++i )
+    {
+        printf ("[%0X %0X]", (buf[i] & 0xF0) >> 4,
+                (buf[i] & 0x0F));
+    }
+    printf ("\n");
+}
 /*
  ***** Б Л О К  об'явлений прототипов обращений к подпрограммам 1-го просмотра
  */
@@ -113,6 +121,7 @@ union                                             /*определить об'е
 int CHADR;                                        /*счетчик                 */
 
 unsigned char PL8_buf[8];
+unsigned char PL3_buf[3];
 /*
  ***** ТАБЛИЦА символов
  */
@@ -217,6 +226,7 @@ union                                             /*определить об'е
 {
 	unsigned char BUF_OP_RR [2];              /*оределить буфер         */
 	struct OPRR OP_RR;                        /*структурировать его     */
+    int RR;
 } RR;
 
 struct OPRX                                       /*структ.буф.опер.форм.RX */
@@ -245,6 +255,7 @@ union                                             /*определить об'е
 {
 	unsigned char BUF_OP_RX [4];              /*оределить буфер         */
 	struct OPRX OP_RX;                        /*структурировать его     */
+    int RX;
 } RX;
 
 
@@ -540,144 +551,201 @@ int FNOP()
  ******* Б Л О К  об'явлений подпрограмм, используемых при 2-ом просмотре
  */
 
-void STXT( int ARG )                              /*подпр.формир.TXT-карты  */
+void STXT( int ARG ,int flag )                              /*ïîäïð.ôîðìèð.TXT-êàðòû  */
 {
-	char *PTR;                                /*рабоч.переменная-указат.*/
-
-	PTR = (char *)&CHADR;                     /*формирование поля ADOP  */
-	TXT.STR_TXT.ADOP[2]  = *PTR;              /*TXT-карты в формате     */
-	TXT.STR_TXT.ADOP[1]  = *(PTR+1);          /*двоичного целого        */
-	TXT.STR_TXT.ADOP[0]  = '\x00';            /*в соглашениях ЕС ЭВМ    */
-
-    switch (ARG)
+    char *PTR;                                      /*ðàáî÷.ïåðåìåííàÿ-óêàçàò.*/
+    if(flag == 1)
     {
-        case 2:
-            memset ( TXT.STR_TXT.OPER, 64, 4 );          /*формирование поля OPER  */
-            memcpy ( TXT.STR_TXT.OPER,RR.BUF_OP_RR, 2 ); /* для RR-формата         */
-            TXT.STR_TXT.DLNOP [1] = 2;
-            break;
-        case 4:
-            memcpy ( TXT.STR_TXT.OPER, RX.BUF_OP_RX, 4);/* для RX-формата         */
-            TXT.STR_TXT.DLNOP [1] = 4;
-            break;
-        case 6:
-            memcpy ( TXT.STR_TXT.OPER , SS.BUF_OP_SS , 6);/* XX - format         */
-            TXT.STR_TXT.DLNOP [1] = 6;
-            break;
-        case 8:
-            memcpy ( TXT.STR_TXT.OPER , PL8_buf , 8);
-            TXT.STR_TXT.DLNOP [1] = 8;
-            break;
-        default:
-            printf("Ошибка при форм. TXT-карты: ARG = %i\n",ARG);
-            exit(-1);
-            break;
+        //	  printf("dddd");
+        if (CHADR % 4) {
+            CHADR = (CHADR /4 + 1) * 4;
+        }
+        return;
     }
-	memcpy (TXT.STR_TXT.POLE9,ESD.STR_ESD.POLE11,8);/*формиров.идентифик.поля */
-    printTXT(TXT.STR_TXT);
-	memcpy ( OBJTEXT[ITCARD], TXT.BUF_TXT, 80 ); /*запись об'ектной карты  */
-	ITCARD += 1;                              /*коррекц.инд-са своб.к-ты*/
-	CHADR = CHADR + ARG;                      /*коррекц.счетчика адреса */
-	return;
+    PTR = (char *)&CHADR;                           /*ôîðìèðîâàíèå ïîëÿ ADOP  */
+    TXT.STR_TXT.ADOP[2]  = *PTR;                    /*TXT-êàðòû â ôîðìàòå     */
+    TXT.STR_TXT.ADOP[1]  = *(PTR+1);                /*äâîè÷íîãî öåëîãî        */
+    TXT.STR_TXT.ADOP[0]  = '\x00';                  /*â ñîãëàøåíèÿõ ÅÑ ÝÂÌ    */
+    
+    memset ( TXT.STR_TXT.OPER, 0x40, 56 );
+    
+    if ( ARG == 2 )                                 /*ôîðìèðîâàíèå ïîëÿ OPER  */
+    {
+        memcpy ( TXT.STR_TXT.OPER,RR.BUF_OP_RR , 2 ); /* äëÿ RR-ôîðìàòà         */
+        TXT.STR_TXT.DLNOP [1] = 2;
+    }
+    else if ( ARG == 3 )
+    {
+        memcpy ( TXT.STR_TXT.OPER , PL3_buf , 3);   /* äëÿ PL3         */
+        TXT.STR_TXT.DLNOP [1] = 3 ;
+        
+    }
+    else if ( ARG == 4 )
+    {
+        memcpy ( TXT.STR_TXT.OPER , RX.BUF_OP_RX , 4);/* äëÿ RX-ôîðìàòà         */
+        TXT.STR_TXT.DLNOP [1] = 4;
+    }
+    else if ( ARG == 6 )
+    {
+        memcpy ( TXT.STR_TXT.OPER , SS.BUF_OP_SS , 6);/* äëÿ RX-ôîðìàòà         */
+        TXT.STR_TXT.DLNOP [1] = 6;
+    }
+    else
+    { if ( ARG == 8 ){
+        memcpy ( TXT.STR_TXT.OPER , PL8_buf , 8);     /* äëÿ PL8                */
+        TXT.STR_TXT.DLNOP [1] = 8;}
+    }
+    
+    memcpy (TXT.STR_TXT.POLE9,ESD.STR_ESD.POLE11,8);/*ôîðìèðîâ.èäåíòèôèê.ïîëÿ */
+    memcpy ( OBJTEXT[ITCARD] , TXT.BUF_TXT , 80 );  /*çàïèñü îá'åêòíîé êàðòû  */
+    ITCARD += 1;                                    /*êîððåêö.èíä-ñà ñâîá.ê-òû*/
+    CHADR = CHADR + ARG;                            /*êîððåêö.ñ÷åò÷èêà àäðåñà */
+    return;
 }
 
-int SDC()                                         /*подпр.обр.пс.опер.DC    */
+int SDC()                                         /*ïîäïð.îáð.ïñ.îïåð.DC    */
 {
-	char *RAB;                                /*рабочая переменная      */
-
-	RX.OP_RX.OP   = 0;                        /*занулим два старших     */
-	RX.OP_RX.R1X2 = 0;                        /*байта RX.OP_RX          */
-	if
-	(                                         /* если операнд начинается*/
-	        !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* с комбинации           */
-	                "F'", 2)            /* F',                    */
-	)                                         /* то                     */
-	{
-		RAB=strtok                        /*в перем. c указат.RAB   */
-		             (              /*выбираем первую лексему */
-		             (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*операнда текущей карты  */
-		             "'"            /*исх.текста АССЕМБЛЕРА   */
-		             );
-
-		RX.OP_RX.B2D2 = atoi ( RAB );     /*перевод ASCII-> int     */
-		RAB = (char *) &RX.OP_RX.B2D2;    /*приведение к соглашениям*/
-		swab ( RAB, RAB, 2 );             /* ЕС ЭВМ                 */
-	}
-    else{                                      /*иначе                   */
-        if
-            (                                         /* если операнд начинается*/
-             !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* с комбинации           */
-                     "H'", 2)            /* F',                    */
-             )                                         /* то                     */
+    char *RAB;                                      /*ðàáî÷àÿ ïåðåìåííàÿ      */
+    
+    if
+        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
+         !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
+                 "F'", 2)                                /* F',                    */
+         )                                             /* òî                     */
+    {
+        RAB=strtok                                    /*â ïåðåì. c óêàçàò.RAB   */
+        (                                        /*âûáèðàåì ïåðâóþ ëåêñåìó */
+         (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*îïåðàíäà òåêóùåé êàðòû  */
+         "'"                                     /*èñõ.òåêñòà ÀÑÑÅÌÁËÅÐÀ   */
+         );
+        
+        RX.RX = atol ( RAB );                         /*ïåðåâîä ASCII-> int     */
+        RAB = (char *) &RX.OP_RX;
+        char temp[4];
+        swab ( RAB , (char *)&temp[2] , 2 );
+        swab ( (char *) &RAB[2] , temp , 2 );
+        memcpy ( RAB, temp, 4);
+        
+        STXT (4,0);                                     /*ôîðìèðîâàíèå TXT-êàðòû  */
+    }
+    if
+        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
+         !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
+                 "H'", 2)                            /* H',                    */
+         )                                             /* òî                     */
+    {
+        RAB=strtok                                    /*â ïåðåì. c óêàçàò.RAB   */
+        (                                        /*âûáèðàåì ïåðâóþ ëåêñåìó */
+         (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*îïåðàíäà òåêóùåé êàðòû  */
+         ".'"                                     /*èñõ.òåêñòà ÀÑÑÅÌÁËÅÐÀ   */
+         );
+        
+        RR.RR = atoi ( RAB );                         /*ïåðåâîä ASCII-> int     */
+        RAB = (char *) &RR.OP_RR;                        /*ïðèâåäåíèå ê ñîãëàøåíèÿì*/
+        swab ( RAB , RAB , 2 );                       /* ÅÑ ÝÂÌ                 */
+        
+        STXT (2,0);                                     /*ôîðìèðîâàíèå TXT-êàðòû  */
+    }
+    if
+        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
+         !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
+                 "PL", 2)                                /* PL,                    */
+         )                                             /* òî                     */
+    {
+        char znak = 0xF;
+        int ind = 4;
+        int len, i, ost;
+        
+        if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[2]=='3')
+            len = 3;
+        else
+            len = 8;
+        
+        if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4] == '+')
+            znak = 0xC;
+        else if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4] == '-')
+            znak = 0xD;
+        
+        i = 0;
+        while ( TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4+i] != '\'' )
         {
-            RAB=strtok                        /*в перем. c указат.RAB   */
-            (              /*выбираем первую лексему */
-             (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*операнда текущей карты  */
-             "'"            /*исх.текста АССЕМБЛЕРА   */
-             );
+            i++;
+            ind++;
+        }
+        
+        char BUFF[8];
+        memset (BUFF, 0, 8);
+        BUFF[len-1] = znak;
+        
+        for (i=1; i<len*2;i++,ind--)
+        {
+            if ( TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] == '\'' ||
+                TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] == '-' )
+                break;
             
-            RX.OP_RX.B2D2 = atoi ( RAB );     /*перевод ASCII-> int     */
-            RAB = (char *) &RX.OP_RX.B2D2;    /*приведение к соглашениям*/
-            swab ( RAB, RAB, 2 );             /* ЕС ЭВМ                 */
-        }else{
-            if
-                (                                         /* если операнд начинается*/
-                 !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* с комбинации           */
-                         "DL", 2)            /* F',                    */
-                 )                                         /* то                     */
+            ost = i % 2;
+            
+            char digit = TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] - 48;
+            
+            if ( ost )
             {
-                
-                RAB=strtok((char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+3,"'");
-                RX.OP_RX.B2D2 = atoi ( RAB );     /*перевод ASCII-> int     */
-                RAB = (char *) &RX.OP_RX.B2D2;    /*приведение к соглашениям*/
-                swab ( RAB, RAB, 2 );             /* ЕС ЭВМ                 */
+                BUFF[len-1-(i-ost)/2] += digit << 4;
             }
-            else{
-                printf("ОШИБКА: SDC(): неизвестный тип операнда %s\n",TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
-                return (1);                       /*сообщение об ошибке     */
+            else
+            {
+                BUFF[len-1-i/2] = digit;
             }
         }
+        
+        printf ("current %d\n", CHADR);
+        
+        if (len == 4)
+        {
+            memcpy(RX.BUF_OP_RX, BUFF, 4);
+            STXT (4,0);                                   /*ôîðìèðîâàíèå TXT-êàðòû  */
+        }
+        else if (len == 3)
+        {
+            memcpy(PL3_buf, BUFF, 3);
+            print_pl_value (PL3_buf, 3);
+            STXT (3,0);
+        }
+        else if (len == 8)
+        {
+            memcpy(PL8_buf, BUFF, 8);
+            print_pl_value (PL8_buf, 8);
+            STXT (8,0);
+        }
     }
-
-	STXT (4);                                 /*формирование TXT-карты  */
-
-
-	return (0);                               /*успешн.завершение подпр.*/
+    
+    return (0);                                     /*óñïåøí.çàâåðøåíèå ïîäïð.*/
 }
 /*..........................................................................*/
-int SDS()                                         /*подпр.обр.пс.опер.DS    */
+int SDS()                                         /*ïîäïð.îáð.ïñ.îïåð.DS    */
 {
-
-	RX.OP_RX.OP   = 0;                        /*занулим два старших     */
-	RX.OP_RX.R1X2 = 0;                        /*байта RX.OP_RX          */
-	if
-	(                                         /* если операнд начинается*/
-	        TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[0]=='F' /* с комбинации F'        */
-     ){                                         /* то:                    */
-		RX.OP_RX.B2D2 = 0;                /*занулим RX.OP_RX.B2D2   */
+    RX.OP_RX.OP   = 0;                              /*çàíóëèì äâà ñòàðøèõ     */
+    RX.OP_RX.R1X2 = 0;                              /*áàéòà RX.OP_RX          */
+    if
+        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
+         TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[0]=='F' /* ñ êîìáèíàöèè F' èëè 0F */
+         )                                             /* òî:                    */
+    { 
+        RX.OP_RX.B2D2 = 0;                           /*çàíóëèì RX.OP_RX.B2D2   */
+        STXT (4,0);                                    /*ôîðìèðîâàíèå TXT-êàðòû  */
+        
     }
-    else{                                      /*иначе                   */
-        if
-            (                                         /* если операнд начинается*/
-             TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[1]=='H' /* с комбинации F'        */
-             ){                                        /* то:                    */
-            RX.OP_RX.B2D2 = 0;                /*занулим RX.OP_RX.B2D2   */
-        }else{
-            if
-                (                                         /* если операнд начинается*/
-                 TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[1]=='F' /* с комбинации F'        */
-                 ){                                         /* то:                    */
-                RX.OP_RX.B2D2 = 0;                /*занулим RX.OP_RX.B2D2   */
-                }else{
-                    printf("ОШИБКА: SDS(): неизвестный тип операнда %s\n",TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
-                    return (1);                       /*сообщение об ошибке     */
-                }
-        }
-    }
-
-	STXT (4);                                 /*формирование TXT-карты  */
-
-	return (0);                               /*успешно завершить подпр.*/
+    else                                            /*èíà÷å                   */
+        if 
+            (
+             TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[0]!='0'
+             )
+        {
+            return (1);}                                  /*ñîîáùåíèå îá îøèáêå     */
+    //printf("dfffd");
+    
+    STXT (0,1);                                    /*ôîðìèðîâàíèå TXT-êàðòû  */
+    
+    return (0);                                     /*óñïåøíî çàâåðøèòü ïîäïð.*/
 }
 /*..........................................................................*/
 int SEND()                                        /*подпр.обр.пс.опер.END   */
@@ -904,7 +972,7 @@ SRR2:
 	RR.OP_RR.R1R2 = R1R2;                     /*формируем опер-ды маш-ой*/
 	/*команды                 */
 
-	STXT(2);
+	STXT(2,0);
 	return(0);                                /*выйти из подпрограммы   */
 }
 
@@ -1015,7 +1083,7 @@ SRX2:
 
 	RX.OP_RX.R1X2 = R1X2;                     /*дозапись перв.операнда  */
 
-	STXT(4);                                  /*формирование TXT-карты  */
+	STXT(4,0);                                  /*формирование TXT-карты  */
 	return(0);                                /*выйти из подпрограммы   */
 }
 int SSS()                                         /*подпр.обр.опер.XX-форм. */
@@ -1054,7 +1122,7 @@ int SSS()                                         /*подпр.обр.опер.X
         return 2; // another error code?
     }
     
-    STXT(6); 
+    STXT(6,0);
     return 0;
 }
 /*..........................................................................*/
