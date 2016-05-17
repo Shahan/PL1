@@ -278,6 +278,9 @@ int P_MVC()
     }
     
     ADDR1 = VR[B] + VR[X] + D;
+    FILE * debugFile = fopen("addres.txt", "wt");
+    fprintf(debugFile, "addr1 = %d, addr2 = %d",BAS_IND + CUR_IND + sm1, BAS_IND + CUR_IND + sm2);
+    fclose(debugFile);
     writeMemory("AFTER_MVC.txt");
     return 0;
 }
@@ -839,12 +842,15 @@ CONT2:
 			J = (J << 8) + TXT.STR_TXT.ADOP [1]; /*  индекс загрузки в мас-*/
 			J = (J << 8) + TXT.STR_TXT.ADOP [2]; /*  сиве OBLZ             */
 			J += BAS_IND;             /*и                       */
+           
 			/*                        */
 			K = TXT.STR_TXT.DLNOP [0]; /* в переменной K длину   */
 			K = (K << 8) + TXT.STR_TXT.DLNOP [1]; /* загружаемых данных     */
 
-			for ( N=0; N < K; N++ )   /*загрузить данные с очер.*/
+            for ( N=0; N < K; N++ ) {  /*загрузить данные с очер.*/
+                printf("%d) %d\n", (int)J, (int)TXT.STR_TXT.OPER [N]);
 				OBLZ [ (int) J++ ] = TXT.STR_TXT.OPER [N]; /*об'ектной карты         */
+            }
 		}
 	}
 
