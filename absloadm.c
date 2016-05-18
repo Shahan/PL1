@@ -287,14 +287,31 @@ int P_MVC()
 
 int P_CVB()
 {
-    int sm;                                   /*рабочая переменная      */
-    ADDR1 = VR[B] + VR[X] + D;                 /*вычисление рабочего     */
-    sm = ( int ) ( ADDR1 - I );                /*адреса и смещения       */
-    ARG = OBLZ[BAS_IND + CUR_IND + sm] * 0x1000000L+/*формирование содержимого*/
-    OBLZ[BAS_IND + CUR_IND + sm + 1] * 0x10000L +/*второго операнда в сог- */
-    OBLZ[BAS_IND + CUR_IND + sm + 2] * 0x100 + /*лашениях ЕС ЭВМ         */
-    OBLZ[BAS_IND + CUR_IND + sm + 3];   /*                        */
-    VR[R1] = ARG;
+    int i, sm;
+    
+    printf("CVB - change addr - %0lX\n", ADDR1);
+    
+    ADDR1 = VR[B] + VR[X] + D;
+    sm = ( int ) ( ADDR1 - I );
+    
+    printf("CVB - change addr - %0lX %lu\n", ADDR1, VR[X] + D);
+    
+    //     for ( i=0 ; i < 8 ; ++i )
+    //     {
+    //        PRINT("CVB - [%0X]\n", OBLZ[BAS_IND + CUR_IND + sm + i]);
+    //     }
+    
+    VR[R1] =
+    (OBLZ[BAS_IND + CUR_IND + sm+4] >> 4) * 1000000  +
+    (OBLZ[BAS_IND + CUR_IND + sm+4] % 0x10) * 100000 +
+    (OBLZ[BAS_IND + CUR_IND + sm+5] >> 4) * 10000    +
+    (OBLZ[BAS_IND + CUR_IND + sm+5] % 0x10) * 1000   +
+    (OBLZ[BAS_IND + CUR_IND + sm+6] >> 4) * 100      +
+    (OBLZ[BAS_IND + CUR_IND + sm+6] % 0x10) * 10     +
+    (OBLZ[BAS_IND + CUR_IND + sm+7] >> 4);
+    
+    if (OBLZ[BAS_IND + CUR_IND + sm+7] % 0x10 == 0xD)
+        VR[R1] = -1 * VR[R1];
     return 0;
 }
 int P_CR()
