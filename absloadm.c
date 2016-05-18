@@ -318,17 +318,17 @@ int P_CR()
 {
     if(VR[R1]==VR[R2])
     {
-        PSW = 15;
+        PSW = 0;
     }
     else
     {
         if(VR[R1]>VR[R2])
         {
-            PSW = 8;
+            PSW = 2;
         }
         else//(VR[R1]<VR[R2])
         {
-            PSW = 9;
+            PSW = 1;
         }
     }
     return 0;

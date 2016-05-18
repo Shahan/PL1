@@ -1436,17 +1436,17 @@ int AVI2 ()
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "8,L2", 4 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "1,L2", 4 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "9,L2", 4 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "2,L2", 4 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "15,L1", 5 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "0,L1", 4 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "L2", 2 );
