@@ -266,9 +266,9 @@ int P_MVC()
     int sm1, sm2, i;
     
     ADDR1 = VR[B] + D;
-    sm1 = (int) ( ADDR1 - I );
+    sm1 = (int) ( ADDR1 - I ) - 16;
     ADDR2 = VR[B2] + D2;
-    sm2 = (int) ( ADDR2 - I );
+    sm2 = (int) ( ADDR2 - I ) - 8;
     
     for (i=0; i<LENGTH; i++)
     {
