@@ -1715,10 +1715,10 @@ int OEN2 ()
             /* fixed, то:             */
             {
                 //reserve bytes before binary (unnessecary in some cases)
-                //         DS    1H
+                //         DS    0H
                 memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                 memcpy ( ASS_CARD._BUFCARD.OPERAC, "DS",2 );
-                memcpy ( ASS_CARD._BUFCARD.OPERAND, "1H", 2 );
+                memcpy ( ASS_CARD._BUFCARD.OPERAND, "0H", 2 );
                 ZKARD ();
                 
                 
@@ -1788,11 +1788,11 @@ int OEN2 ()
     
     //TODO place buf to SUM (declare constant buffers only if nessecary for code)
     
-    //         DS    1F
+    //         DS    0F
     //BUF      DC    DL8'0'
     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "DS",2 );
-    memcpy ( ASS_CARD._BUFCARD.OPERAND, "1F", 2 );
+    memcpy ( ASS_CARD._BUFCARD.OPERAND, "0F", 2 );
     ZKARD ();
     memcpy ( ASS_CARD._BUFCARD.METKA, "BUF", 3 );
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "DC",2 );
