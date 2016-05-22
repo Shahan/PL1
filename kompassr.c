@@ -616,8 +616,6 @@ void STXT( int ARG )                              /*подпр.формир.TXT-
 	return;
 }
 
-#define OLD_SDC
-#ifdef OLD_SDC
 int SDC()                                         /*подпр.обр.пс.опер.DC    */
 {
 	char *RAB;                                /*рабочая переменная      */
@@ -644,26 +642,26 @@ int SDC()                                         /*подпр.обр.пс.оп�
     else{                                      /*иначе                   */
         
         if
-            (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
-             !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
-                     "H'", 2)                            /* H',                    */
-             )                                             /* òî                     */
+            (                                             
+             !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,
+                     "H'", 2)
+             )                                            
         {
-            RAB=strtok                                    /*â ïåðåì. c óêàçàò.RAB   */
-            (                                        /*âûáèðàåì ïåðâóþ ëåêñåìó */
-             (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*îïåðàíäà òåêóùåé êàðòû  */
-             "'"                                     /*èñõ.òåêñòà ÀÑÑÅÌÁËÅÐÀ   */
+            RAB=strtok                                    
+            (
+             (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,
+             "'"
              );
-            RR.RR = atoi ( RAB );                         /*ïåðåâîä ASCII-> int     */
-            RAB = (char *) &RR.RR;                        /*ïðèâåäåíèå ê ñîãëàøåíèÿì*/
-            swab ( RAB , RAB , 2 );                       /* ÅÑ ÝÂÌ                 */
-            STXT (2);                                     /*ôîðìèðîâàíèå TXT-êàðòû  */
+            RR.RR = atoi ( RAB );                         
+            RAB = (char *) &RR.RR;                        
+            swab ( RAB , RAB , 2 );                       
+            STXT (2);
         } else {
             if
-                (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
-                 !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
-                         "DL", 2)                                /* PL,                    */
-                 )                                             /* òî                     */
+                (                                             
+                 !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,
+                         "DL", 2)                             
+                 )
             {
                 char znak = 0xC;
                 int ind = 4;
@@ -715,7 +713,7 @@ int SDC()                                         /*подпр.обр.пс.оп�
                 if (len == 4)
                 {
                     memcpy(RX.BUF_OP_RX, BUFF, 4);
-                    STXT (4);                                   /*ôîðìèðîâàíèå TXT-êàðòû  */
+                    STXT (4);
                 }
                 else if (len == 3)
                 {
@@ -739,126 +737,6 @@ int SDC()                                         /*подпр.обр.пс.оп�
 
 	return (0);                               /*успешн.завершение подпр.*/
 }
-#else
-/*..........................................................................*/
-int SDC()                                         /*ïîäïð.îáð.ïñ.îïåð.DC    */
-{
-    char *RAB;                                      /*ðàáî÷àÿ ïåðåìåííàÿ      */
-    
-    if
-        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
-         !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
-                 "F'", 2)                                /* F',                    */
-         )                                             /* òî                     */
-    {
-        RAB=strtok                                    /*â ïåðåì. c óêàçàò.RAB   */
-        (                                        /*âûáèðàåì ïåðâóþ ëåêñåìó */
-         (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*îïåðàíäà òåêóùåé êàðòû  */
-         "'"                                     /*èñõ.òåêñòà ÀÑÑÅÌÁËÅÐÀ   */
-         );
-        
-        RX.RX = atol ( RAB );                         /*ïåðåâîä ASCII-> int     */
-        RAB = (char *) &RX.RX;
-        char temp[4];
-        swab ( RAB , (char *)&temp[2] , 2 );
-        swab ( (char *) &RAB[2] , temp , 2 );
-        memcpy ( RAB, temp, 4);
-        
-        STXT (4);                                     /*ôîðìèðîâàíèå TXT-êàðòû  */
-    }
-    if
-        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
-         !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
-                 "H'", 2)                            /* H',                    */
-         )                                             /* òî                     */
-    {
-        RAB=strtok                                    /*â ïåðåì. c óêàçàò.RAB   */
-        (                                        /*âûáèðàåì ïåðâóþ ëåêñåìó */
-         (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND+2,/*îïåðàíäà òåêóùåé êàðòû  */
-         ".'"                                     /*èñõ.òåêñòà ÀÑÑÅÌÁËÅÐÀ   */
-         );
-        
-        RR.RR = atoi ( RAB );                         /*ïåðåâîä ASCII-> int     */
-        RAB = (char *) &RR.RR;                        /*ïðèâåäåíèå ê ñîãëàøåíèÿì*/
-        swab ( RAB , RAB , 2 );                       /* ÅÑ ÝÂÌ                 */
-        
-        STXT (2);                                     /*ôîðìèðîâàíèå TXT-êàðòû  */
-    }
-    if
-        (                                             /* åñëè îïåðàíä íà÷èíàåòñÿ*/
-         !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,/* ñ êîìáèíàöèè           */
-                 "DL", 2)                                /* PL,                    */
-         )                                             /* òî                     */
-    {
-        char znak = 0xF;
-        int ind = 4;
-        int len, i, ost;
-        
-        if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[2]=='3')
-            len = 3;
-        else
-            len = 8;
-        
-        if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4] == '+')
-            znak = 0xC;
-        else if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4] == '-')
-            znak = 0xD;
-        
-        i = 0;
-        while ( TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4+i] != '\'' )
-        {
-            i++;
-            ind++;
-        }
-        
-        char BUFF[8];
-        memset (BUFF, 0, 8);
-        BUFF[len-1] = znak;
-        
-        for (i=1; i<len*2;i++,ind--)
-        {
-            if ( TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] == '\'' ||
-                TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] == '-' )
-                break;
-            
-            ost = i % 2;
-            
-            char digit = TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] - 48;
-            
-            if ( ost )
-            {
-                BUFF[len-1-(i-ost)/2] += digit << 4;
-            }
-            else
-            {
-                BUFF[len-1-i/2] = digit;
-            }
-        }
-        
-        printf ("current %d\n", CHADR);
-        
-        if (len == 4)
-        {
-            memcpy(RX.BUF_OP_RX, BUFF, 4);
-            STXT (4);                                   /*ôîðìèðîâàíèå TXT-êàðòû  */
-        }
-        else if (len == 3)
-        {
-            memcpy(PL3_buf, BUFF, 3);
-            print_pl_value (PL3_buf, 3);
-            STXT (3);
-        }
-        else if (len == 8)
-        {
-            memcpy(PL8_buf, BUFF, 8);
-            print_pl_value (PL8_buf, 8);
-            STXT (8);
-        }
-    }
-    
-    return (0);                                     /*óñïåøí.çàâåðøåíèå ïîäïð.*/
-}
-#endif
 /*..........................................................................*/
 int SDS()                                         /*подпр.обр.пс.опер.DS    */
 {
