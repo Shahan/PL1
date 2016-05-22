@@ -647,7 +647,7 @@ int SDC()                                         /*подпр.обр.пс.оп�
                          "DL", 2)                                /* PL,                    */
                  )                                             /* òî                     */
             {
-                char znak = 0xF;
+                char znak = 0xC;
                 int ind = 4;
                 int len, i, ost;
                 
