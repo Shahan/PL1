@@ -1416,8 +1416,8 @@ int AVI2 ()
                         
                         //      LH    RRAB,TRUE
                         //      CR    R2,R3
-                        //      BC    8,L2
-                        //      BC    15,L1
+                        //      BC    7,L2      not equal
+                        //      BC    15,L1     unconditional
                         //L2    LH    RRAB,FALSE
                         //L1
                         
@@ -1433,17 +1433,12 @@ int AVI2 ()
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "1,L2", 4 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "7,L2", 4 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                         memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "2,L2", 4 );
-                        ZKARD ();
-                        
-                        memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAC, "BC", 2 );
-                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "0,L1", 4 );
+                        memcpy ( ASS_CARD._BUFCARD.OPERAND, "15,L1", 5 );
                         ZKARD ();
                         
                         memcpy ( ASS_CARD._BUFCARD.METKA, "L2", 2 );

@@ -336,7 +336,9 @@ int P_CR()
 int P_BC()
 {
     int mask=R1;
-    if(PSW == mask)
+    if ((mask == 7 && PSW != 0)     //branch if not equals
+        || (mask == 8 && PSW == 0)  //branch if equals
+        || (mask == 15))             //branch always
     {
         ADDR1 = VR[B] + VR[X] + D;
         int sm = ( int ) ( ADDR1 -I );
