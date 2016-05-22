@@ -564,10 +564,10 @@ void STXT( int ARG )                              /*подпр.формир.TXT-
 	TXT.STR_TXT.ADOP[1]  = *(PTR+1);          /*двоичного целого        */
 	TXT.STR_TXT.ADOP[0]  = '\x00';            /*в соглашениях ЕС ЭВМ    */
 
+    memset ( TXT.STR_TXT.OPER, 64, 56 );          /*формирование поля OPER  */
     switch (ARG)
     {
         case 2:
-            memset ( TXT.STR_TXT.OPER, 64, 4 );          /*формирование поля OPER  */
             memcpy ( TXT.STR_TXT.OPER,RR.BUF_OP_RR, 2 ); /* для RR-формата         */
             TXT.STR_TXT.DLNOP [1] = 2;
             break;
