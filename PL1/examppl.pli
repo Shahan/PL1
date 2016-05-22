@@ -1,6 +1,6 @@
 EX08:	PROC  OPTIONS  ( MAIN );
 		DCL	A	BIN    FIXED  INIT  ( 3 );
-		DCL	B	DEC  FIXED  INIT  ( 3 );
+		DCL	B	DEC  FIXED  INIT  ( 9 );
 		DCL	C	BIN    FIXED;
         C = A = B;
 	END  EX08;

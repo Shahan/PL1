@@ -55,7 +55,7 @@ int FRR();                                        /*подпр.обр.опер.R
 /*п р о т о т и п  обращ.к*/
 int FRX();                                        /*подпр.обр.опер.RX-форм. */
 /*..........................................................................*/
-int FSS();
+int FXX();
 int FNOP();
 /*
  ***** Б Л О К  об'явлений прототипов обращений к подпрограммам 2-го просмотра
@@ -84,7 +84,7 @@ int SRR();                                        /*подпр.обр.опер.R
 /*..........................................................................*/
 /*п р о т о т и п  обращ.к*/
 int SRX();                                        /*подпр.обр.опер.RX-форм. */
-int SSS();
+int SXX();
 /*..........................................................................*/
 
 /*
@@ -157,7 +157,7 @@ struct TMOP                                       /*структ.стр.табл
 	{{'L',' ',' ',' ',' '}, '\x58', 4, FRX},  /*машинных                */
 	{{'A',' ',' ',' ',' '}, '\x5A', 4, FRX},  /*операций                */
 	{{'S',' ',' ',' ',' '}, '\x5B', 4, FRX},  /*                        */
-    {{'M','V','C',' ',' '}, '\xD2', 6, FSS},  /* ADDED BY SERGEY RUMP   */
+    {{'M','V','C',' ',' '}, '\xD2', 6, FXX},  /* ADDED BY SERGEY RUMP   */
     {{'C','V','B',' ',' '}, '\x4F', 4, FRX},
     {{'C','R',' ',' ',' '}, '\x19', 2, FRR},
     {{'B','C',' ',' ',' '}, '\x47', 4, FRX},
@@ -241,7 +241,7 @@ struct OPRX                                       /*структ.буф.опер
 	/*D2 - смещен.относит.базы*/
 };
 
-struct OPSS                                       /*структ.буф.опер.форм.XX */
+struct OPXX                                       /*структ.буф.опер.форм.XX */
 {
     unsigned char OP;                             
     unsigned char L1L2;                           
@@ -250,9 +250,9 @@ struct OPSS                                       /*структ.буф.опер
 };
 union
 {
-    unsigned char BUF_OP_SS [6];
-    struct OPSS OP_SS;
-} SS;
+    unsigned char BUF_OP_XX [6];
+    struct OPXX OP_XX;
+} XX;
 union                                             /*определить об'единение  */
 {
 	unsigned char BUF_OP_RX [4];              /*оределить буфер         */
@@ -533,7 +533,7 @@ int FRX()                                         /*подпр.обр.опер.R
 	}
 	return(0);                                /*выйти из подпрограммы   */
 }
-int FSS()                                         /*подпр.обр.опер.XX-форм. */
+int FXX()                                         /*подпр.обр.опер.XX-форм. */
 {
     CHADR = CHADR + 6;                        /*увеличить сч.адр. на 4  */
     if ( PRNMET == 'Y' )                      /*если ранее обнар.метка, */
@@ -580,7 +580,7 @@ void STXT( int ARG )                              /*подпр.формир.TXT-
             TXT.STR_TXT.DLNOP [1] = 4;
             break;
         case 6:
-            memcpy ( TXT.STR_TXT.OPER , SS.BUF_OP_SS , 6);/* XX - format         */
+            memcpy ( TXT.STR_TXT.OPER , XX.BUF_OP_XX , 6);/* XX - format         */
             TXT.STR_TXT.DLNOP [1] = 6;
             break;
         case 8:
@@ -1224,9 +1224,9 @@ SRX2:
 	STXT(4);                                  /*формирование TXT-карты  */
 	return(0);                                /*выйти из подпрограммы   */
 }
-int SSS()                                         /*подпр.обр.опер.XX-форм. */
+int SXX()                                         /*подпр.обр.опер.XX-форм. */
 {
-    SS.OP_SS.OP = T_MOP[I3].CODOP;
+    XX.OP_XX.OP = T_MOP[I3].CODOP;
     
     printf ("%s\n", (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
     char op1[8], op2[8];
@@ -1248,9 +1248,9 @@ int SSS()                                         /*подпр.обр.опер.X
         if (-1 == B2D2) { printf ("bad addr of second operand\n"); return 2; }
         swab ( &B2D2 , &B2D2 , 2 );
         
-        SS.OP_SS.L1L2 = length - 1;
-        SS.OP_SS.B1D1 = B1D1;
-        SS.OP_SS.B2D2 = B2D2;
+        XX.OP_XX.L1L2 = length - 1;
+        XX.OP_XX.B1D1 = B1D1;
+        XX.OP_XX.B2D2 = B2D2;
         
         printf ("%d(%0X) %d(%0X)\n", ide1, B1D1, ide2, B2D2);
     }
@@ -1498,7 +1498,7 @@ CONT3:
 	T_MOP[4].BXPROG = SRX; // A
 	T_MOP[5].BXPROG = SRX; // S
     
-    T_MOP[6].BXPROG = SSS; // MVC
+    T_MOP[6].BXPROG = SXX; // MVC
     T_MOP[7].BXPROG = SRX; // CVB
     T_MOP[8].BXPROG = SRR; // CR
     T_MOP[9].BXPROG = SRX; // BC
