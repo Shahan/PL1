@@ -1709,13 +1709,14 @@ int OEN2 ()
             if ( SYM [i].TYPE == 'B' ) /* если тип оператора bin */
             /* fixed, то:             */
             {
+                /*
                 //reserve bytes before binary (unnessecary in some cases)
                 //         DS    0H
                 memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
                 memcpy ( ASS_CARD._BUFCARD.OPERAC, "DS",2 );
                 memcpy ( ASS_CARD._BUFCARD.OPERAND, "0H", 2 );
                 ZKARD ();
-                
+                */
                 
                 strcpy ( ASS_CARD._BUFCARD.METKA, /* пишем идентификатор в  */
                         SYM [i].NAME ); /* поле метки псевдоопера-*/
