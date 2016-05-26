@@ -74,10 +74,10 @@ int R1,                                           /*номер 1-го регис
     D,D2,                                            /*смещение в формате RX   */
     X,X2,                                            /*номер индексн. регистра */
 /*в формате RX            */
-    B,B2,                                            /*номер базового регистра */
+    B,B2;                                            /*номер базового регистра */
 /*в формате RX            */
-    PSW,
-LENGTH,LENGTH2;
+unsigned short CC;
+int LENGTH, LENGTH2;
 unsigned long I,                                  /*счетчик адр.тек.ком-ды  */
               BAS_ADDR,                     /*адрес начала обл.загруз.*/
               I1,ADDR1,ADDR2,ARG,VS;               /*вспомогательные перем.  */
@@ -333,17 +333,17 @@ int P_CR()
 {
     if(VR[R1]==VR[R2])
     {
-        PSW = 0;
+        CC = 0;
     }
     else
     {
         if(VR[R1]>VR[R2])
         {
-            PSW = 2;
+            CC = 2;
         }
         else//(VR[R1]<VR[R2])
         {
-            PSW = 1;
+            CC = 1;
         }
     }
     return 0;
@@ -351,8 +351,8 @@ int P_CR()
 int P_BC()
 {
     int mask=R1;
-    if ((mask == 7 && PSW != 0)     //branch if not equals
-        || (mask == 8 && PSW == 0)  //branch if equals
+    if ((mask == 7 && CC != 0)     //branch if not equals
+        || (mask == 8 && CC == 0)  //branch if equals
         || (mask == 15))             //branch always
     {
         ADDR1 = VR[B] + VR[X] + D;
@@ -648,7 +648,7 @@ l0:
 		wprintw(wblue, "%d:", i);
 		wprintw(wblue, "%.08lX", VR[i]);
 	}
-    wprintw(wblue, "PSW:%08lX\n",PSW);
+    wprintw(wblue, "CC:%01d\n",CC);
 	wrefresh(wblue); //вывод на экран
 	wclear(wblue); //очистка окна регистров
 	wind();
