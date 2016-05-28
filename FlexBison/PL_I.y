@@ -5,7 +5,7 @@
 #define YYERROR_VERBOSE 1
 #define YYSTYPE char*
 
-int yylineno;
+extern int yylineno;
 
 YYSTYPE yylval;
 

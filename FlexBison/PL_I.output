@@ -1,0 +1,496 @@
+Grammar
+
+    0 $accept: pro $end
+
+    1 pro: opr tel oen
+
+    2 tel: dec imp
+
+    3 dec: odc
+    4    | dec odc
+
+    5 odc: odi
+    6    | odr
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' ';'
+
+    8 odr: DCL ipe BIN FIXED '(' rzr ')' ';'
+
+    9 ipe: IDENT
+
+   10 rzr: NUM
+
+   11 lit: NUM
+
+   12 opr: IDENT ':' PROC OPTIONS '(' MAIN ')' ';'
+
+   13 oen: END IDENT ';'
+
+   14 imp: opa
+   15    | imp opa
+
+   16 opa: ipe '=' avi ';'
+
+   17 avi: lit
+   18    | ipe
+   19    | avi ZNK lit
+   20    | avi ZNK ipe
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'(' (40) 7 8 12
+')' (41) 7 8 12
+':' (58) 12
+';' (59) 7 8 12 13 16
+'=' (61) 16
+error (256)
+IDENT (258) 9 12 13
+PROC (259) 12
+OPTIONS (260) 12
+MAIN (261) 12
+END (262) 13
+DCL (263) 7 8
+BIN (264) 7 8
+FIXED (265) 7 8
+NUM (266) 10 11
+INIT (267) 7
+ZNK (268) 19 20
+
+
+Nonterminals, with rules where they appear
+
+$accept (19)
+    on left: 0
+pro (20)
+    on left: 1, on right: 0
+tel (21)
+    on left: 2, on right: 1
+dec (22)
+    on left: 3 4, on right: 2 4
+odc (23)
+    on left: 5 6, on right: 3 4
+odi (24)
+    on left: 7, on right: 5
+odr (25)
+    on left: 8, on right: 6
+ipe (26)
+    on left: 9, on right: 7 8 16 18 20
+rzr (27)
+    on left: 10, on right: 7 8
+lit (28)
+    on left: 11, on right: 7 17 19
+opr (29)
+    on left: 12, on right: 1
+oen (30)
+    on left: 13, on right: 1
+imp (31)
+    on left: 14 15, on right: 2 15
+opa (32)
+    on left: 16, on right: 14 15
+avi (33)
+    on left: 17 18 19 20, on right: 16 19 20
+
+
+state 0
+
+    0 $accept: . pro $end
+
+    IDENT  shift, and go to state 1
+
+    pro  go to state 2
+    opr  go to state 3
+
+
+state 1
+
+   12 opr: IDENT . ':' PROC OPTIONS '(' MAIN ')' ';'
+
+    ':'  shift, and go to state 4
+
+
+state 2
+
+    0 $accept: pro . $end
+
+    $end  shift, and go to state 5
+
+
+state 3
+
+    1 pro: opr . tel oen
+
+    DCL  shift, and go to state 6
+
+    tel  go to state 7
+    dec  go to state 8
+    odc  go to state 9
+    odi  go to state 10
+    odr  go to state 11
+
+
+state 4
+
+   12 opr: IDENT ':' . PROC OPTIONS '(' MAIN ')' ';'
+
+    PROC  shift, and go to state 12
+
+
+state 5
+
+    0 $accept: pro $end .
+
+    $default  accept
+
+
+state 6
+
+    7 odi: DCL . ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' ';'
+    8 odr: DCL . ipe BIN FIXED '(' rzr ')' ';'
+
+    IDENT  shift, and go to state 13
+
+    ipe  go to state 14
+
+
+state 7
+
+    1 pro: opr tel . oen
+
+    END  shift, and go to state 15
+
+    oen  go to state 16
+
+
+state 8
+
+    2 tel: dec . imp
+    4 dec: dec . odc
+
+    IDENT  shift, and go to state 13
+    DCL    shift, and go to state 6
+
+    odc  go to state 17
+    odi  go to state 10
+    odr  go to state 11
+    ipe  go to state 18
+    imp  go to state 19
+    opa  go to state 20
+
+
+state 9
+
+    3 dec: odc .
+
+    $default  reduce using rule 3 (dec)
+
+
+state 10
+
+    5 odc: odi .
+
+    $default  reduce using rule 5 (odc)
+
+
+state 11
+
+    6 odc: odr .
+
+    $default  reduce using rule 6 (odc)
+
+
+state 12
+
+   12 opr: IDENT ':' PROC . OPTIONS '(' MAIN ')' ';'
+
+    OPTIONS  shift, and go to state 21
+
+
+state 13
+
+    9 ipe: IDENT .
+
+    $default  reduce using rule 9 (ipe)
+
+
+state 14
+
+    7 odi: DCL ipe . BIN FIXED '(' rzr ')' INIT '(' lit ')' ';'
+    8 odr: DCL ipe . BIN FIXED '(' rzr ')' ';'
+
+    BIN  shift, and go to state 22
+
+
+state 15
+
+   13 oen: END . IDENT ';'
+
+    IDENT  shift, and go to state 23
+
+
+state 16
+
+    1 pro: opr tel oen .
+
+    $default  reduce using rule 1 (pro)
+
+
+state 17
+
+    4 dec: dec odc .
+
+    $default  reduce using rule 4 (dec)
+
+
+state 18
+
+   16 opa: ipe . '=' avi ';'
+
+    '='  shift, and go to state 24
+
+
+state 19
+
+    2 tel: dec imp .
+   15 imp: imp . opa
+
+    IDENT  shift, and go to state 13
+
+    $default  reduce using rule 2 (tel)
+
+    ipe  go to state 18
+    opa  go to state 25
+
+
+state 20
+
+   14 imp: opa .
+
+    $default  reduce using rule 14 (imp)
+
+
+state 21
+
+   12 opr: IDENT ':' PROC OPTIONS . '(' MAIN ')' ';'
+
+    '('  shift, and go to state 26
+
+
+state 22
+
+    7 odi: DCL ipe BIN . FIXED '(' rzr ')' INIT '(' lit ')' ';'
+    8 odr: DCL ipe BIN . FIXED '(' rzr ')' ';'
+
+    FIXED  shift, and go to state 27
+
+
+state 23
+
+   13 oen: END IDENT . ';'
+
+    ';'  shift, and go to state 28
+
+
+state 24
+
+   16 opa: ipe '=' . avi ';'
+
+    IDENT  shift, and go to state 13
+    NUM    shift, and go to state 29
+
+    ipe  go to state 30
+    lit  go to state 31
+    avi  go to state 32
+
+
+state 25
+
+   15 imp: imp opa .
+
+    $default  reduce using rule 15 (imp)
+
+
+state 26
+
+   12 opr: IDENT ':' PROC OPTIONS '(' . MAIN ')' ';'
+
+    MAIN  shift, and go to state 33
+
+
+state 27
+
+    7 odi: DCL ipe BIN FIXED . '(' rzr ')' INIT '(' lit ')' ';'
+    8 odr: DCL ipe BIN FIXED . '(' rzr ')' ';'
+
+    '('  shift, and go to state 34
+
+
+state 28
+
+   13 oen: END IDENT ';' .
+
+    $default  reduce using rule 13 (oen)
+
+
+state 29
+
+   11 lit: NUM .
+
+    $default  reduce using rule 11 (lit)
+
+
+state 30
+
+   18 avi: ipe .
+
+    $default  reduce using rule 18 (avi)
+
+
+state 31
+
+   17 avi: lit .
+
+    $default  reduce using rule 17 (avi)
+
+
+state 32
+
+   16 opa: ipe '=' avi . ';'
+   19 avi: avi . ZNK lit
+   20    | avi . ZNK ipe
+
+    ZNK  shift, and go to state 35
+    ';'  shift, and go to state 36
+
+
+state 33
+
+   12 opr: IDENT ':' PROC OPTIONS '(' MAIN . ')' ';'
+
+    ')'  shift, and go to state 37
+
+
+state 34
+
+    7 odi: DCL ipe BIN FIXED '(' . rzr ')' INIT '(' lit ')' ';'
+    8 odr: DCL ipe BIN FIXED '(' . rzr ')' ';'
+
+    NUM  shift, and go to state 38
+
+    rzr  go to state 39
+
+
+state 35
+
+   19 avi: avi ZNK . lit
+   20    | avi ZNK . ipe
+
+    IDENT  shift, and go to state 13
+    NUM    shift, and go to state 29
+
+    ipe  go to state 40
+    lit  go to state 41
+
+
+state 36
+
+   16 opa: ipe '=' avi ';' .
+
+    $default  reduce using rule 16 (opa)
+
+
+state 37
+
+   12 opr: IDENT ':' PROC OPTIONS '(' MAIN ')' . ';'
+
+    ';'  shift, and go to state 42
+
+
+state 38
+
+   10 rzr: NUM .
+
+    $default  reduce using rule 10 (rzr)
+
+
+state 39
+
+    7 odi: DCL ipe BIN FIXED '(' rzr . ')' INIT '(' lit ')' ';'
+    8 odr: DCL ipe BIN FIXED '(' rzr . ')' ';'
+
+    ')'  shift, and go to state 43
+
+
+state 40
+
+   20 avi: avi ZNK ipe .
+
+    $default  reduce using rule 20 (avi)
+
+
+state 41
+
+   19 avi: avi ZNK lit .
+
+    $default  reduce using rule 19 (avi)
+
+
+state 42
+
+   12 opr: IDENT ':' PROC OPTIONS '(' MAIN ')' ';' .
+
+    $default  reduce using rule 12 (opr)
+
+
+state 43
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' . INIT '(' lit ')' ';'
+    8 odr: DCL ipe BIN FIXED '(' rzr ')' . ';'
+
+    INIT  shift, and go to state 44
+    ';'   shift, and go to state 45
+
+
+state 44
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' INIT . '(' lit ')' ';'
+
+    '('  shift, and go to state 46
+
+
+state 45
+
+    8 odr: DCL ipe BIN FIXED '(' rzr ')' ';' .
+
+    $default  reduce using rule 8 (odr)
+
+
+state 46
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' INIT '(' . lit ')' ';'
+
+    NUM  shift, and go to state 29
+
+    lit  go to state 47
+
+
+state 47
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit . ')' ';'
+
+    ')'  shift, and go to state 48
+
+
+state 48
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' . ';'
+
+    ';'  shift, and go to state 49
+
+
+state 49
+
+    7 odi: DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' ';' .
+
+    $default  reduce using rule 7 (odi)

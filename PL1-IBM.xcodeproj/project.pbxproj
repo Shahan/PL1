@@ -22,18 +22,6 @@
 			name = ALL;
 			productName = ALL;
 		};
-		CDE679A31CF9FD3700B464EF /* flex-bison */ = {
-			isa = PBXAggregateTarget;
-			buildConfigurationList = CDE679AD1CF9FD3700B464EF /* Build configuration list for PBXAggregateTarget "flex-bison" */;
-			buildPhases = (
-				CDE679AA1CF9FD3700B464EF /* CopyFiles */,
-				CDE679AC1CF9FD3700B464EF /* ShellScript */,
-			);
-			dependencies = (
-			);
-			name = "flex-bison";
-			productName = ALL;
-		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -43,9 +31,9 @@
 		415A81541C84B5EE00E45F22 /* examppl.pli in CopyFiles */ = {isa = PBXBuildFile; fileRef = 415A81531C84B5E700E45F22 /* examppl.pli */; };
 		415A81561C84B61900E45F22 /* libncurses.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 415A81551C84B61900E45F22 /* libncurses.tbd */; };
 		415A815A1C84B69100E45F22 /* spis.mod in CopyFiles */ = {isa = PBXBuildFile; fileRef = 415A81581C84B68700E45F22 /* spis.mod */; };
+		4E7A170B1CFA096400261A34 /* lex.yy.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E7A17081CFA096400261A34 /* lex.yy.c */; };
+		4E7A170C1CFA096400261A34 /* PL_I.tab.c in Sources */ = {isa = PBXBuildFile; fileRef = 4E7A17091CFA096400261A34 /* PL_I.tab.c */; };
 		CD6659731C85BC1900A99587 /* run-task in CopyFiles */ = {isa = PBXBuildFile; fileRef = CD6659721C85BC1900A99587 /* run-task */; };
-		CDE679BC1CF9FE4000B464EF /* Makefile in CopyFiles */ = {isa = PBXBuildFile; fileRef = CDE679B31CF9FE4000B464EF /* Makefile */; };
-		CDE679C11CF9FE4000B464EF /* RunScript in CopyFiles */ = {isa = PBXBuildFile; fileRef = CDE679B81CF9FE4000B464EF /* RunScript */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -120,24 +108,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4E7A16FF1CFA093100261A34 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
 		CD6659711C85BC1100A99587 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
-				CDE679BC1CF9FE4000B464EF /* Makefile in CopyFiles */,
-				CDE679C11CF9FE4000B464EF /* RunScript in CopyFiles */,
 				CD6659731C85BC1900A99587 /* run-task in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CDE679AA1CF9FD3700B464EF /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 0;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -153,13 +139,11 @@
 		415A81531C84B5E700E45F22 /* examppl.pli */ = {isa = PBXFileReference; lastKnownFileType = text; path = examppl.pli; sourceTree = "<group>"; };
 		415A81551C84B61900E45F22 /* libncurses.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libncurses.tbd; path = usr/lib/libncurses.tbd; sourceTree = SDKROOT; };
 		415A81581C84B68700E45F22 /* spis.mod */ = {isa = PBXFileReference; lastKnownFileType = text; path = spis.mod; sourceTree = "<group>"; };
+		4E7A17011CFA093100261A34 /* FlexBison */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = FlexBison; sourceTree = BUILT_PRODUCTS_DIR; };
+		4E7A17081CFA096400261A34 /* lex.yy.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = lex.yy.c; sourceTree = "<group>"; };
+		4E7A17091CFA096400261A34 /* PL_I.tab.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = PL_I.tab.c; sourceTree = "<group>"; };
+		4E7A170A1CFA096400261A34 /* PL_I.tab.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PL_I.tab.h; sourceTree = "<group>"; };
 		CD6659721C85BC1900A99587 /* run-task */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "run-task"; sourceTree = "<group>"; };
-		CDE679871CF9971A00B464EF /* PL_I.l */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.lex; path = PL_I.l; sourceTree = "<group>"; };
-		CDE679881CF9971A00B464EF /* PL_I.y */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.yacc; path = PL_I.y; sourceTree = "<group>"; };
-		CDE6798B1CF9971A00B464EF /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
-		CDE679941CF997E700B464EF /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		CDE679B31CF9FE4000B464EF /* Makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = Makefile; path = "flex-bison/Makefile"; sourceTree = "<group>"; };
-		CDE679B81CF9FE4000B464EF /* RunScript */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = RunScript; path = "flex-bison/RunScript"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -185,6 +169,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		4E7A16FE1CFA093100261A34 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -198,9 +189,9 @@
 				415A812B1C84B40100E45F22 /* komppl */,
 				415A81361C84B41800E45F22 /* kompassr */,
 				415A814C1C84B4CA00E45F22 /* absloadm */,
-				CDE679861CF996B100B464EF /* flex-bison */,
-				CDE679931CF997E700B464EF /* flex-bison */,
+				4E7A17021CFA093100261A34 /* FlexBison */,
 				415A81471C84B43500E45F22 /* Products */,
+				4E7A17011CFA093100261A34 /* FlexBison */,
 			);
 			sourceTree = "<group>";
 		};
@@ -254,24 +245,14 @@
 			path = MOD;
 			sourceTree = "<group>";
 		};
-		CDE679861CF996B100B464EF /* flex-bison */ = {
+		4E7A17021CFA093100261A34 /* FlexBison */ = {
 			isa = PBXGroup;
 			children = (
-				CDE679B31CF9FE4000B464EF /* Makefile */,
-				CDE679B81CF9FE4000B464EF /* RunScript */,
-				CDE679871CF9971A00B464EF /* PL_I.l */,
-				CDE679881CF9971A00B464EF /* PL_I.y */,
-				CDE6798B1CF9971A00B464EF /* ReadMe */,
+				4E7A17081CFA096400261A34 /* lex.yy.c */,
+				4E7A17091CFA096400261A34 /* PL_I.tab.c */,
+				4E7A170A1CFA096400261A34 /* PL_I.tab.h */,
 			);
-			name = "flex-bison";
-			sourceTree = "<group>";
-		};
-		CDE679931CF997E700B464EF /* flex-bison */ = {
-			isa = PBXGroup;
-			children = (
-				CDE679941CF997E700B464EF /* main.cpp */,
-			);
-			path = "flex-bison";
+			path = FlexBison;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -331,6 +312,24 @@
 			productReference = 415A81401C84B42800E45F22 /* absloadm */;
 			productType = "com.apple.product-type.tool";
 		};
+		4E7A17001CFA093100261A34 /* FlexBison */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4E7A17051CFA093100261A34 /* Build configuration list for PBXNativeTarget "FlexBison" */;
+			buildPhases = (
+				4E7A170D1CFA098700261A34 /* ShellScript */,
+				4E7A16FD1CFA093100261A34 /* Sources */,
+				4E7A16FE1CFA093100261A34 /* Frameworks */,
+				4E7A16FF1CFA093100261A34 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FlexBison;
+			productName = FlexBison;
+			productReference = 4E7A17011CFA093100261A34 /* FlexBison */;
+			productType = "com.apple.product-type.tool";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -352,6 +351,9 @@
 					415A815C1C84BA6000E45F22 = {
 						CreatedOnToolsVersion = 7.2.1;
 					};
+					4E7A17001CFA093100261A34 = {
+						CreatedOnToolsVersion = 7.3;
+					};
 				};
 			};
 			buildConfigurationList = 415A81141C84B3CB00E45F22 /* Build configuration list for PBXProject "PL1-IBM" */;
@@ -370,7 +372,7 @@
 				415A81341C84B41800E45F22 /* kompassr */,
 				415A813F1C84B42800E45F22 /* absloadm */,
 				415A815C1C84BA6000E45F22 /* ALL */,
-				CDE679A31CF9FD3700B464EF /* flex-bison */,
+				4E7A17001CFA093100261A34 /* FlexBison */,
 			);
 		};
 /* End PBXProject section */
@@ -389,6 +391,19 @@
 			shellPath = /bin/sh;
 			shellScript = "osascript -e 'tell application \"Terminal\"' -e 'delay 0.5' -e \"set currentTab to do script (\\\"cd \\\\\\\"$TARGET_BUILD_DIR\\\\\\\" ; ./$PRODUCT_NAME spis.mod\\\")\" -e 'end tell' &";
 		};
+		4E7A170D1CFA098700261A34 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/bash;
+			shellScript = "cd \"${PROJECT_DIR}/FlexBison\"\nflex PL_I.l\nbison -d PL_I.y";
+		};
 		CD6659741C85BC5300A99587 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -401,19 +416,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "cd \"$TARGET_BUILD_DIR\"\nchmod 0777 ./run-task.sh\nosascript -e 'tell application \"Terminal\"' -e 'delay 0.5' -e \"set currentTab to do script (\\\"cd \\\\\\\"$TARGET_BUILD_DIR\\\\\\\" ; ./run-task\\\")\" -e 'end tell' &";
-		};
-		CDE679AC1CF9FD3700B464EF /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$TARGET_BUILD_DIR\"\npwd";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -439,6 +441,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				415A814B1C84B47F00E45F22 /* absloadm.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4E7A16FD1CFA093100261A34 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4E7A170C1CFA096400261A34 /* PL_I.tab.c in Sources */,
+				4E7A170B1CFA096400261A34 /* lex.yy.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -598,16 +609,18 @@
 			};
 			name = Release;
 		};
-		CDE679AE1CF9FD3700B464EF /* Debug */ = {
+		4E7A17061CFA093100261A34 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
 		};
-		CDE679AF1CF9FD3700B464EF /* Release */ = {
+		4E7A17071CFA093100261A34 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -660,14 +673,13 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CDE679AD1CF9FD3700B464EF /* Build configuration list for PBXAggregateTarget "flex-bison" */ = {
+		4E7A17051CFA093100261A34 /* Build configuration list for PBXNativeTarget "FlexBison" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				CDE679AE1CF9FD3700B464EF /* Debug */,
-				CDE679AF1CF9FD3700B464EF /* Release */,
+				4E7A17061CFA093100261A34 /* Debug */,
+				4E7A17071CFA093100261A34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
