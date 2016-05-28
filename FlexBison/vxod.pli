@@ -1,0 +1,8 @@
+ex1:proc options(main);
+     dcl A bin fixed (31) init (3);
+     dcl B bin fixed (31) init (5);
+     dcl C bin fixed (31) init (5);
+     dcl D bin fixed (31);
+     D=A-B-B+C;
+end ex1;
+

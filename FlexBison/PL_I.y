@@ -72,7 +72,7 @@ int  avi_avi_znk_ipe(char *znk, char *ipe);
 %}
 %debug
 %verbose
-%token IDENT PROC OPTIONS MAIN END DCL BIN FIXED NUM INIT
+%token IDENT PROC OPTIONS MAIN END DCL BIN DEC FIXED NUM INIT
 %left ZNK
 %start pro
 %%
