@@ -59,7 +59,7 @@ void yyerror(const char *str) {
 }
 
 void pro();
-void odi(char *tpe, char *rzr, char *lit);
+void odi(char *tpe, int type, char *rzr, char *lit);
 void odr(char *tpe, char *rzr);
 void opr(char *pr_name);
 int  oen(char *pr_name);
@@ -86,9 +86,13 @@ dec: odc
 odc: odi
     | odr
      ;
-odi:  DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' ';' { odi($2, $6, $10); }
+odi:  DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' ';' { odi($2, 0, $6,   $10); }
+    | DCL ipe BIN FIXED INIT '(' rzr ')' ';'             { odi($2, 0, "0",  $7); }
+    | DCL ipe DEC FIXED INIT '(' rzr ')' ';'             { odi($2, 1, "31", $7); }
      ;
-odr:  DCL ipe BIN FIXED '(' rzr ')' ';'                  { odr($2, $6); }
+odr:  DCL ipe BIN FIXED '(' rzr ')' ';'                  { odr($2, $6  ); }
+    | DCL ipe BIN FIXED ';'                              { odr($2, "32"); }
+
      ;
 ipe: IDENT {$$=$1;}
      ;
@@ -109,6 +113,7 @@ avi: lit                                                 { avi_lit($1); }
     | ipe                                                { if ( avi_ipe($1) ) YYABORT;}
     | avi ZNK lit                                        { avi_avi_znk_lit($2, $3); }
     | avi ZNK ipe                                        { if ( avi_avi_znk_ipe($2, $3) ) YYABORT; }
+    | ipe '=' avi                                        { if ( avi_avi_znk_ipe($2, $3) ) YYABORT; }
      ;
 %%
 /*
@@ -192,22 +197,38 @@ void pro()
 ,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,
 */
 
-void odi(char *ipe, char *rzr, char *lit) {
-               memset(&s1[0], ' ', 80);
-               memcpy(&s1[0], ipe, strlen(ipe));
-               memcpy(&s1[9], "DC", 2);
-               if(!memcmp(rzr, "31", 2))
-                s1[15]='F';
-               else
-                s1[15]='H';
-               s1[16]='\'';
-               memcpy(&s1[17], lit, strlen(lit));
-               s1[17+strlen(lit)]='\'';
-               memcpy(&s1[30], "Variable declaration with initialization", 40);
+void odi(char *ipe, int type, char *rzr, char *lit) {
+  if (type == 0) {
+    //binary
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[0], ipe, strlen(ipe));
+    memcpy(&s1[9], "DC", 2);
+    if(!memcmp(rzr, "31", 2))
+     s1[15]='F';
+    else
+     s1[15]='H';
+    s1[16]='\'';
+    memcpy(&s1[17], lit, strlen(lit));
+    s1[17+strlen(lit)]='\'';
+    memcpy(&s1[30], "Binary declaration with initialization", 40);
 
-               memcpy(&DclPart[pDclPart][0], &s1[0], 80);
-               pDclPart++;
-              }
+    memcpy(&DclPart[pDclPart][0], &s1[0], 80);
+    pDclPart++;
+  } else if (type == 1) {
+    //decimal
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[0], ipe, strlen(ipe));
+    memcpy(&s1[9], "DC", 2);
+    memcpy(&s1[15], "DL3", 3);
+    s1[18]='\'';
+    memcpy(&s1[19], lit, strlen(lit));
+    s1[19+strlen(lit)]='\'';
+    memcpy(&s1[30], "Decimal declaration with initialization", 40);
+
+    memcpy(&DclPart[pDclPart][0], &s1[0], 80);
+    pDclPart++;
+  }
+}
 
 /*
 ...............................................................................................................
