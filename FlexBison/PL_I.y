@@ -245,7 +245,7 @@ void odi(char *ipe, int type, char *rzr, char *lit) {
     s1[18]='\'';
     memcpy(&s1[19], lit, strlen(lit));
     s1[19+strlen(lit)]='\'';
-    memcpy(&s1[30], "Decimal declaration with initialization", 40);
+    memcpy(&s1[30], "Decimal declaration with initialization", 39);
 
     memcpy(&DclPart[pDclPart][0], &s1[0], 80);
     pDclPart++;
@@ -622,26 +622,25 @@ int main() {
  pAssProg=0;
  pDclPart=0;
  pImpPart=0;
-// yydebug=1;
+  // yydebug=1;
  if (!yyparse()) {
-  int fn, i;
-  if ( 0 >= (fn=open("Result.ass", O_CREAT|O_WRONLY|O_TRUNC, S_IWUSR))) {
-   printf("\n*** error it is not impossible to open Result.ass file\n");
-  }
-  else {
-   for (i=0; i<pAssProg; i++) {
-    if (80 != write(fn, &AssProg[i][0], 80)){
-     printf("\n*** error during writing Result.ass file\n");
-     break;
+    int i;
+    FILE * file;
+    file = fopen("../Build/Products/Debug/examppl.ass", "wt");
+    if (file == NULL) {
+      printf("\n*** error it is not impossible to open Result.ass file\n");
+      return 1;
     }
-   }
-   close(fn);
-   printf("\n*** Compilation is successfull\n");
+    for (i=0; i<pAssProg; i++) {
+      for (int j = 0; j < 78; j++) {
+        fprintf(file, "%c", AssProg[i][j]);
+      }
+      fprintf(file, "\n");
+    }
+    fclose(file);
+    printf("\n*** Compilation is successfull\n");
+    return 0;
   }
- return 0;
- }
- else {
   printf("\n*** Compilation is not successfull\n");
- }
- return 1;
+  return 1;
 }
