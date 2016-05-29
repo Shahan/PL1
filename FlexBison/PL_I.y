@@ -87,11 +87,11 @@ odc: odi
     | odr
      ;
 odi:  DCL ipe BIN FIXED '(' rzr ')' INIT '(' lit ')' ';' { odi($2, 0, $6,   $10); }
-    | DCL ipe BIN FIXED INIT '(' rzr ')' ';'             { odi($2, 0, "0",  $7); }
-    | DCL ipe DEC FIXED INIT '(' rzr ')' ';'             { odi($2, 1, "31", $7); }
+    | DCL ipe BIN FIXED INIT '(' rzr ')' ';'             { odi($2, 0, "31",  $7); }
+    | DCL ipe DEC FIXED INIT '(' rzr ')' ';'             { odi($2, 1, "23", $7); }
      ;
 odr:  DCL ipe BIN FIXED '(' rzr ')' ';'                  { odr($2, $6  ); }
-    | DCL ipe BIN FIXED ';'                              { odr($2, "32"); }
+    | DCL ipe BIN FIXED ';'                              { odr($2, "31"); }
 
      ;
 ipe: IDENT {$$=$1;}
@@ -113,7 +113,7 @@ avi: lit                                                 { avi_lit($1); }
     | ipe                                                { if ( avi_ipe($1) ) YYABORT;}
     | avi ZNK lit                                        { avi_avi_znk_lit($2, $3); }
     | avi ZNK ipe                                        { if ( avi_avi_znk_ipe($2, $3) ) YYABORT; }
-    | ipe '=' avi                                        { if ( avi_avi_znk_ipe($2, $3) ) YYABORT; }
+    | ipe '=' avi                                        { if ( avi_avi_znk_ipe("=", $3) ) YYABORT; }
      ;
 %%
 /*
@@ -146,9 +146,27 @@ void pro()
                      memcpy(&AssProg[pAssProg++][0], &ImpPart[i][0], 80);
                     }
 
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "TRUE     DC    H'1'", 19);
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "FALSE    DC    H'0'", 19);
+
                     for (i=0; i<pDclPart; i++) {
                      memcpy(&AssProg[pAssProg++][0], &DclPart[i][0], 80);
                     }
+
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "         DS    0F", 17);
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "BUF      DC    DL8'0'", 21);
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "RBASE    EQU   15", 17);
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "RRAB     EQU   5", 16);
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "R2       EQU   2", 16);
+                    memset(&AssProg[pAssProg  ][0], ' ', 80);
+                    memcpy(&AssProg[pAssProg++][0], "R3       EQU   3", 16);
 
                     memcpy(&AssProg[pAssProg++], &Epilog[0], 80);
 
@@ -210,7 +228,7 @@ void odi(char *ipe, int type, char *rzr, char *lit) {
     s1[16]='\'';
     memcpy(&s1[17], lit, strlen(lit));
     s1[17+strlen(lit)]='\'';
-    memcpy(&s1[30], "Binary declaration with initialization", 40);
+    memcpy(&s1[30], "Binary declaration with initialization", 38);
 
     memcpy(&DclPart[pDclPart][0], &s1[0], 80);
     pDclPart++;
@@ -219,7 +237,11 @@ void odi(char *ipe, int type, char *rzr, char *lit) {
     memset(&s1[0], ' ', 80);
     memcpy(&s1[0], ipe, strlen(ipe));
     memcpy(&s1[9], "DC", 2);
-    memcpy(&s1[15], "DL3", 3);
+    if (!strcmp(rzr, "23")) {
+      memcpy(&s1[15], "DL3", 3);
+    } else {
+      memcpy(&s1[15], "DL8", 3);
+    }
     s1[18]='\'';
     memcpy(&s1[19], lit, strlen(lit));
     s1[19+strlen(lit)]='\'';
@@ -309,11 +331,12 @@ int oen(char *pr_name) {
 
                 memset(&s1[0], ' ', 80);
                 memcpy(&s1[9], "END", 3);
+                memcpy(&s1[15], pr_name, strlen(pr_name));
                 memcpy(&s1[30], "Programm end", 12);
                 memcpy(&Epilog[0], &s1[0], 80);
 
                 memset(&s1[0], ' ', 80);
-                memcpy(&s1[9], "BCR   15,RVIX", 13);
+                memcpy(&s1[9], "BCR   15,14", 11);
                 memcpy(&s1[30], "Return from programm", 20);
 
                 memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
@@ -353,7 +376,7 @@ int opa(char *ipe) {
                 yyerror(&ErrorMessage[0]);
                 return 1;
                 }
-                memset(&s1[0], ' ', 80);
+                memset(&s1[9], ' ', 70);
                 memcpy(&s1[9], "ST", 2);
                 memcpy(&s1[15], "RRAB,", 5);
                 memcpy(&s1[20], ipe, strlen(ipe));
@@ -416,7 +439,7 @@ int  avi_ipe(char *ipe) {
                 }
                 memset(&s1[0], ' ', 80);
                 memcpy(&s1[9], "L", 1);
-                memcpy(&s1[15], "RRAB,", 5);
+                memcpy(&s1[15], "R2,", 3);
                 memcpy(&s1[20], ipe, strlen(ipe));
                 memcpy(&s1[30], "Variable value loading", 22);
 
@@ -474,30 +497,86 @@ void avi_avi_znk_lit(char *znk, char *lit) {
 */
 
 int  avi_avi_znk_ipe(char *znk, char *ipe) {
-                if (IsDclName(ipe, strlen(ipe))){
-                strcpy(&ErrorMessage[0], " invalid identificator ");
-                strcat(&ErrorMessage[0], ipe);
-                strcat(&ErrorMessage[0], " ");
-                strcat(&ErrorMessage[0], "in avi of opa\n");
-                yyerror(&ErrorMessage[0]);
-                return 1;
-                }
-                memset(&s1[0], ' ', 80);
-                if(!memcmp(znk, "+", 1)) {
-                 memcpy(&s1[9], "A", 1);
-                 memcpy(&s1[30], "Variable\'s value adding", 23);
-                }
-                if(!memcmp(znk, "-", 1)) {
-                 memcpy(&s1[9], "S", 1);
-                 memcpy(&s1[30], "Variable\'s value substracting", 29);
-                }
-                memcpy(&s1[15], "RRAB,", 5);
-                memcpy(&s1[20], ipe, strlen(ipe));
+  if (IsDclName(ipe, strlen(ipe))){
+    strcpy(&ErrorMessage[0], " invalid identificator ");
+    strcat(&ErrorMessage[0], ipe);
+    strcat(&ErrorMessage[0], " ");
+    strcat(&ErrorMessage[0], "in avi of opa\n");
+    yyerror(&ErrorMessage[0]);
+    return 1;
+  }
+  
+  if(!memcmp(znk, "+", 1)) {
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "A", 1);
+    memcpy(&s1[30], "Variable\'s value adding", 23);
+    memcpy(&s1[15], "RRAB,", 5);
+    memcpy(&s1[20], ipe, strlen(ipe));
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+  } else if(!memcmp(znk, "-", 1)) {
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "S", 1);
+    memcpy(&s1[30], "Variable\'s value substracting", 29);
+    memcpy(&s1[15], "RRAB,", 5);
+    memcpy(&s1[20], ipe, strlen(ipe));
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+  } else if(!memcmp(znk, "=", 1)) {
+    //equals
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "MVC", 3);
+    memcpy(&s1[15], "BUF+5(3),", 9);
+    memcpy(&s1[24], ipe, strlen(ipe));
+    memcpy(&s1[30], "Move value to BUF", 17);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "CVB", 3);
+    memcpy(&s1[15], "R3,BUF", 6);
+    memcpy(&s1[30], "Load BUF to R3", 14);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "LH", 2);
+    memcpy(&s1[15], "RRAB,TRUE", 9);
+    memcpy(&s1[30], "Load TRUE to LH", 15);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "CR", 2);
+    memcpy(&s1[15], "R2,R3", 5);
+    memcpy(&s1[30], "Compare registers", 17);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "BC", 2);
+    memcpy(&s1[15], "7,L2", 4);
+    memcpy(&s1[30], "Branch non equals", 17);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[9], "BC", 2);
+    memcpy(&s1[15], "15,L1", 5);
+    memcpy(&s1[30], "Branch always", 13);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[0], "L2", 2);
+    memcpy(&s1[9], "LH", 2);
+    memcpy(&s1[15], "RRAB,FALSE", 10);
+    memcpy(&s1[30], "Branch always", 13);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+    pImpPart++;
+    memset(&s1[0], ' ', 80);
+    memcpy(&s1[0], "L1", 2);
+    memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
+  } else {
+    printf("fail %c", znk);
+  }
 
-                memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
-                pImpPart++;
 
-                return 0;
+  return 0;
 }
 
 /*
@@ -541,13 +620,7 @@ int yywrap() {
 
 int main() {
  pAssProg=0;
- memset(&DclPart[0][0], ' ', 80);
- memcpy(&DclPart[0][0], "RBASE    EQU   5", 16);
- memset(&DclPart[1][0], ' ', 80);
- memcpy(&DclPart[1][0], "RVIX     EQU   14", 17);
- memset(&DclPart[2][0], ' ', 80);
- memcpy(&DclPart[2][0], "RRAB     EQU   3", 16);
- pDclPart=3;
+ pDclPart=0;
  pImpPart=0;
 // yydebug=1;
  if (!yyparse()) {
