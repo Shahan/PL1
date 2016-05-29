@@ -109,11 +109,11 @@ imp: opa
      ;
 opa: ipe '=' avi ';'                                     { if ( opa($1) ) YYABORT; }
      ;
-avi: lit                                                 { avi_lit($1); }
-    | ipe                                                { if ( avi_ipe($1) ) YYABORT;}
-    | avi ZNK lit                                        { avi_avi_znk_lit($2, $3); }
-    | avi ZNK ipe                                        { if ( avi_avi_znk_ipe($2, $3) ) YYABORT; }
-    | ipe '=' avi                                        { if ( avi_avi_znk_ipe("=", $3) ) YYABORT; }
+avi: lit                                                 {  }
+    | ipe                                                { }
+    | avi ZNK lit                                        { avi_lit($1); avi_avi_znk_lit($2, $3); }
+    | avi ZNK ipe                                        { if ( avi_ipe($1) ) YYABORT; if ( avi_avi_znk_ipe($2, $3) ) YYABORT; }
+    | ipe '=' avi                                        { if ( avi_ipe($1) ) YYABORT; if ( avi_avi_znk_ipe("=", $3) ) YYABORT; }
      ;
 %%
 /*
@@ -440,7 +440,7 @@ int  avi_ipe(char *ipe) {
                 memset(&s1[0], ' ', 80);
                 memcpy(&s1[9], "L", 1);
                 memcpy(&s1[15], "R2,", 3);
-                memcpy(&s1[20], ipe, strlen(ipe));
+                memcpy(&s1[18], ipe, strlen(ipe));
                 memcpy(&s1[30], "Variable value loading", 22);
 
                 memcpy(&ImpPart[pImpPart][0], &s1[0], 80);
