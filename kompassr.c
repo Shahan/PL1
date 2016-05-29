@@ -404,7 +404,7 @@ int FDC()                                         /*подпр.обр.пс.оп�
             }else{
                 if                                /* если псевдооперация DC */
                     (                                 /* определяет константу   */
-                     TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[0]=='D' &&/* типа H, то выполнить   */
+                     TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[0]=='P' &&/* типа H, то выполнить   */
                      TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[1]=='L'
                      )                                 /* следующее:             */
                 {
@@ -660,7 +660,7 @@ int SDC()                                         /*подпр.обр.пс.оп�
             if
                 (                                             
                  !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,
-                         "DL", 2)                             
+                         "PL", 2)
                  )
             {
                 char znak = 0xC;

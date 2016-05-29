@@ -1761,7 +1761,7 @@ int OEN2 ()
                 memcpy ( ASS_CARD._BUFCARD.OPERAC, /* пишем код псевдоопера- */
                         "DC", 2 ); /* ции DC                 */
                 
-                strcpy ( ASS_CARD._BUFCARD.OPERAND,      /* для случая слова       */ "DL3\'" );
+                strcpy ( ASS_CARD._BUFCARD.OPERAND,      /* для случая слова       */ "PL3\'" );
                 
                 //Dos command
                 //  strcat ( ASS_CARD._BUFCARD.OPERAND,       /* формируем цифровую     */
@@ -1785,14 +1785,14 @@ int OEN2 ()
     //TODO place buf to SUM (declare constant buffers only if nessecary for code)
     
     //         DS    0F
-    //BUF      DC    DL8'0'
+    //BUF      DC    PL8'0'
     memcpy ( ASS_CARD._BUFCARD.METKA, "", 0 );
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "DS",2 );
     memcpy ( ASS_CARD._BUFCARD.OPERAND, "0F", 2 );
     ZKARD ();
     memcpy ( ASS_CARD._BUFCARD.METKA, "BUF", 3 );
     memcpy ( ASS_CARD._BUFCARD.OPERAC, "DC",2 );
-    memcpy ( ASS_CARD._BUFCARD.OPERAND, "DL8'0'", 6 );
+    memcpy ( ASS_CARD._BUFCARD.OPERAND, "PL8'0'", 6 );
     ZKARD ();
     
     

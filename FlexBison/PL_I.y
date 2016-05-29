@@ -158,7 +158,7 @@ void pro()
                     memset(&AssProg[pAssProg  ][0], ' ', 80);
                     memcpy(&AssProg[pAssProg++][0], "         DS    0F", 17);
                     memset(&AssProg[pAssProg  ][0], ' ', 80);
-                    memcpy(&AssProg[pAssProg++][0], "BUF      DC    DL8'0'", 21);
+                    memcpy(&AssProg[pAssProg++][0], "BUF      DC    PL8'0'", 21);
                     memset(&AssProg[pAssProg  ][0], ' ', 80);
                     memcpy(&AssProg[pAssProg++][0], "RBASE    EQU   15", 17);
                     memset(&AssProg[pAssProg  ][0], ' ', 80);
@@ -238,9 +238,9 @@ void odi(char *ipe, int type, char *rzr, char *lit) {
     memcpy(&s1[0], ipe, strlen(ipe));
     memcpy(&s1[9], "DC", 2);
     if (!strcmp(rzr, "23")) {
-      memcpy(&s1[15], "DL3", 3);
+      memcpy(&s1[15], "PL3", 3);
     } else {
-      memcpy(&s1[15], "DL8", 3);
+      memcpy(&s1[15], "PL8", 3);
     }
     s1[18]='\'';
     memcpy(&s1[19], lit, strlen(lit));
