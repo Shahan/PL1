@@ -157,11 +157,12 @@ struct TMOP                                       /*структ.стр.табл
 	{{'L',' ',' ',' ',' '}, '\x58', 4, FRX},  /*машинных                */
 	{{'A',' ',' ',' ',' '}, '\x5A', 4, FRX},  /*операций                */
 	{{'S',' ',' ',' ',' '}, '\x5B', 4, FRX},  /*                        */
-    {{'M','V','C',' ',' '}, '\xD2', 6, FXX},  /* ADDED BY SERGEY RUMP   */
-    {{'C','V','B',' ',' '}, '\x4F', 4, FRX},
+    {{'S','H',' ',' ',' '}, '\x5C', 4, FRX},
+    {{'S','T','H',' ',' '}, '\x5D', 4, FRX},
     {{'C','R',' ',' ',' '}, '\x19', 2, FRR},
     {{'B','C',' ',' ',' '}, '\x47', 4, FRX},
     {{'L','H',' ',' ',' '}, '\x48', 4, FRX},
+
     
 };
 
@@ -401,26 +402,10 @@ int FDC()                                         /*подпр.обр.пс.оп�
                     T_SYM[ITSYM].ZNSYM = CHADR; /*   запомн. в табл.симв. */
                 }
                 PRNMET = 'N';             /*  занулить PRNMET зн.'N'*/
-            }else{
-                if                                /* если псевдооперация DC */
-                    (                                 /* определяет константу   */
-                     TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[0]=='D' &&/* типа H, то выполнить   */
-                     TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[1]=='L'
-                     )                                 /* следующее:             */
-                {
-                    T_SYM[ITSYM].DLSYM = (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4]-'0');   /*  уст.длину симв. */
-                    T_SYM[ITSYM].PRPER = 'R'; /*  а,призн.перемест.='R' */
-                    if ( CHADR % 4 )          /*  и, если CHADR не указ.*/
-                    {                         /*  на границу слова, то: */
-                        CHADR = (CHADR /4 + 1) * 4; /*   уст.CHADR на гр.сл. и*/
-                        T_SYM[ITSYM].ZNSYM = CHADR; /*   запомн. в табл.симв. */
-                    }
-                    PRNMET = 'N';             /*  занулить PRNMET зн.'N'*/
-                }
-                else{
+            }
+            else{
                 printf("%c %s\n",PRNMET,TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
                 return (1);               /* иначе выход по ошибке  */
-                }
             }
         }
 	}
@@ -660,7 +645,7 @@ int SDC()                                         /*подпр.обр.пс.оп�
             if
                 (                                             
                  !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,
-                         "DL", 2)                             
+                         "PL", 2)
                  )
             {
                 char znak = 0xC;
@@ -1122,45 +1107,45 @@ SRX2:
 	STXT(4);                                  /*формирование TXT-карты  */
 	return(0);                                /*выйти из подпрограммы   */
 }
-int SXX()                                         /*подпр.обр.опер.XX-форм. */
-{
-    XX.OP_XX.OP = T_MOP[I3].CODOP;
-    
-    printf ("%s\n", (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
-    char op1[8], op2[8];
-    int offset, length, B1D1, B2D2;
-    
-    if (4 == sscanf ((char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND, "%8[^+]+%d(%d),%8s", op1, &offset, &length, op2)) {
-        printf ("%s %s %d %d\n", op1, op2, offset, length);
-        
-        int ide1, ide2;
-        if ((ide1 = get_symbol_index(op1)) < 0 || (ide2 = get_symbol_index(op2)) < 0) {
-            return 2;
-        }
-        
-        B1D1 = get_full_addr(T_SYM[ide1].ZNSYM) + offset;
-        if (-1 == B1D1) { printf ("bad addr of first operand\n"); return 2; }
-        swab ( &B1D1 , &B1D1 , 2 );
-        
-        B2D2 = get_full_addr(T_SYM[ide2].ZNSYM);
-        if (-1 == B2D2) { printf ("bad addr of second operand\n"); return 2; }
-        swab ( &B2D2 , &B2D2 , 2 );
-        
-        XX.OP_XX.L1L2 = length - 1;
-        XX.OP_XX.B1D1 = B1D1;
-        XX.OP_XX.B2D2 = B2D2;
-        
-        printf ("%d(%0X) %d(%0X)\n", ide1, B1D1, ide2, B2D2);
-    }
-    else
-    {
-        printf ("bad command format");
-        return 2; // another error code?
-    }
-    
-    STXT(6); 
-    return 0;
-}
+//int SXX()                                         /*подпр.обр.опер.XX-форм. */
+//{
+//    XX.OP_XX.OP = T_MOP[I3].CODOP;
+//    
+//    printf ("%s\n", (char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
+//    char op1[8], op2[8];
+//    int offset, length, B1D1, B2D2;
+//    
+//    if (4 == sscanf ((char*)TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND, "%8[^+]+%d(%d),%8s", op1, &offset, &length, op2)) {
+//        printf ("%s %s %d %d\n", op1, op2, offset, length);
+//        
+//        int ide1, ide2;
+//        if ((ide1 = get_symbol_index(op1)) < 0 || (ide2 = get_symbol_index(op2)) < 0) {
+//            return 2;
+//        }
+//        
+//        B1D1 = get_full_addr(T_SYM[ide1].ZNSYM) + offset;
+//        if (-1 == B1D1) { printf ("bad addr of first operand\n"); return 2; }
+//        swab ( &B1D1 , &B1D1 , 2 );
+//        
+//        B2D2 = get_full_addr(T_SYM[ide2].ZNSYM);
+//        if (-1 == B2D2) { printf ("bad addr of second operand\n"); return 2; }
+//        swab ( &B2D2 , &B2D2 , 2 );
+//        
+//        XX.OP_XX.L1L2 = length - 1;
+//        XX.OP_XX.B1D1 = B1D1;
+//        XX.OP_XX.B2D2 = B2D2;
+//        
+//        printf ("%d(%0X) %d(%0X)\n", ide1, B1D1, ide2, B2D2);
+//    }
+//    else
+//    {
+//        printf ("bad command format");
+//        return 2; // another error code?
+//    }
+//    
+//    STXT(6); 
+//    return 0;
+//}
 /*..........................................................................*/
 int SOBJFILE()                                    /*подпрогр.формир.об'екн. */
 {                                                 /*файла                   */
@@ -1396,8 +1381,8 @@ CONT3:
 	T_MOP[4].BXPROG = SRX; // A
 	T_MOP[5].BXPROG = SRX; // S
     
-    T_MOP[6].BXPROG = SXX; // MVC
-    T_MOP[7].BXPROG = SRX; // CVB
+    T_MOP[6].BXPROG = SRX; // SH
+    T_MOP[7].BXPROG = SRX; // STH
     T_MOP[8].BXPROG = SRR; // CR
     T_MOP[9].BXPROG = SRX; // BC
     T_MOP[10].BXPROG = SRX; // LH
