@@ -162,8 +162,6 @@ struct TMOP                                       /*структ.стр.табл
     {{'C','R',' ',' ',' '}, '\x19', 2, FRR},
     {{'B','C',' ',' ',' '}, '\x47', 4, FRX},
     {{'L','H',' ',' ',' '}, '\x48', 4, FRX},
-
-    
 };
 
 /*
@@ -641,82 +639,10 @@ int SDC()                                         /*подпр.обр.пс.оп�
             RAB = (char *) &RR.RR;                        
             swab ( RAB , RAB , 2 );                       
             STXT (2);
-        } else {
-            if
-                (                                             
-                 !memcmp(TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND,
-                         "PL", 2)
-                 )
-            {
-                char znak = 0xC;
-                int ind = 4;
-                int len, i, ost;
-                
-                if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[2]=='3')
-                    len = 3;
-                else
-                    len = 8;
-                
-                if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4] == '+')
-                    znak = 0xC;
-                else if (TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4] == '-')
-                    znak = 0xD;
-                
-                i = 0;
-                while ( TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[4+i] != '\'' )
-                {
-                    i++;
-                    ind++;
-                }
-                
-                char BUFF[8];
-                memset (BUFF, 0, 8);
-                BUFF[len-1] = znak;
-                
-                for (i=1; i<len*2;i++,ind--)
-                {
-                    if ( TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] == '\'' ||
-                        TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] == '-' )
-                        break;
-                    
-                    ost = i % 2;
-                    
-                    char digit = TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND[ind-1] - 48;
-                    
-                    if ( ost )
-                    {
-                        BUFF[len-1-(i-ost)/2] += digit << 4;
-                    }
-                    else
-                    {
-                        BUFF[len-1-i/2] = digit;
-                    }
-                }
-                
-                printf ("current %d\n", CHADR);
-                
-                if (len == 4)
-                {
-                    memcpy(RX.BUF_OP_RX, BUFF, 4);
-                    STXT (4);
-                }
-                else if (len == 3)
-                {
-                    memcpy(PL3_buf, BUFF, 3);
-                    print_pl_value (PL3_buf, 3);
-                    STXT (3);
-                }
-                else if (len == 8)
-                {
-                    memcpy(PL8_buf, BUFF, 8);
-                    print_pl_value (PL8_buf, 8);
-                    STXT (8);
-                }
-            }
-            else{
-                printf("ОШИБКА: SDC(): неизвестный тип операнда %s\n",TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
-                return (1);                       /*сообщение об ошибке     */
-            }
+        }
+        else{
+            printf("ОШИБКА: SDC(): неизвестный тип операнда %s\n",TEK_ISX_KARTA.STRUCT_BUFCARD.OPERAND);
+            return (1);                       /*сообщение об ошибке     */
         }
     }
 
